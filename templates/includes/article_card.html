@@ -1,0 +1,116 @@
+<div class="{{ card_class|default:'col-lg-4 col-md-6' }} mb-4">
+
+<a href="{% url 'blog.detail' post.slug %}"
+   class="text-decoration-none">
+
+<div class="news-card">
+
+    <div class="news-image">
+
+        {% if post.image %}
+
+            <img src="{{ post.image.url }}" alt="{{ post.title }}">
+
+        {% else %}
+
+            <img src="https://placehold.co/800x500" alt="OM News">
+
+        {% endif %}
+
+        <span class="category-badge">
+
+            {{ post.category.name }}
+
+        </span>
+
+    </div>
+
+    <div class="news-content">
+
+        <h3 class="news-title">
+
+            {{ post.title }}
+
+        </h3>
+
+        <p class="news-summary">
+
+            {{ post.content|truncatewords:18 }}
+
+        </p>
+
+        <div class="news-meta">
+
+    <span>
+
+        Publié par <strong>{{ post.author.username }}</strong>
+
+    </span>
+
+    <span class="dot">•</span>
+
+    <span>
+
+        il y a 2 min
+
+    </span>
+
+</div>
+
+<!-- <div class="news-stats">
+
+    <span>
+
+        {{ post.postlike_set.count }} J'aime
+
+    </span>
+
+    <span>
+
+        {{ post.comments.count }} commentaires
+
+    </span>
+
+    <span>
+
+        {{ post.views }} vues
+
+    </span>
+
+</div> -->
+
+        <div class="news-info mt-3">
+
+            <div>
+
+                <i class="bi bi-heart"></i>
+
+                {{ post.postlike_set.count }}
+
+            </div>
+
+            <div>
+
+                <i class="bi bi-chat"></i>
+
+                {{ post.comments.count }}
+
+            </div>
+
+            <div>
+
+                <i class="bi bi-eye"></i>
+
+                {{ post.views }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</a>
+
+</div>

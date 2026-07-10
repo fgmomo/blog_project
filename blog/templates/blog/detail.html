@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-9">
+
+            {% if post.image %}
+                <img src="{{ post.image.url }}" class="article-image">
+            {% endif %}
+
+            <span class="badge category-badge">
+
+                {{ post.category.name }}
+
+            </span>
+
+            <h1 class="fw-bold mt-4">
+
+                {{ post.title }}
+
+            </h1>
+
+            <div class="article-meta">
+
+                <span>
+
+                    <i class="bi bi-person-circle"></i>
+
+                    {{ post.author.username }}
+
+                </span>
+
+                <span>
+
+                    <i class="bi bi-calendar3"></i>
+
+                    {{ post.created_at|date:"d F Y" }}
+
+                </span>
+
+            </div>
+
+            <div class="stats">
+
+                <span>
+
+                    <i class="bi bi-heart-fill"></i>
+
+                    {{ post.postlike_set.count }}
+
+                </span>
+
+                <span>
+
+                    <i class="bi bi-chat-dots-fill"></i>
+
+                    {{ post.comments.count }}
+
+                </span>
+
+                <span>
+
+                    <i class="bi bi-eye-fill"></i>
+
+                    {{ post.views }}
+
+                </span>
+
+            </div>
+
+            <hr>
+
+            <div class="article-content">
+
+                {{ post.content|linebreaks }}
+
+            </div>
+
+            <hr class="my-5">
+
+            <h3>
+
+                Commentaires ({{ post.comments.count }})
+
+            </h3>
+
+            <div class="alert alert-light border mt-4">
+
+                Aucun commentaire pour le moment.
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

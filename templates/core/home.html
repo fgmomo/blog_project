@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Accueil
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <img src="{% static 'images/hero.jpg' %}" class="hero-image">
+
+    <div class="hero-overlay">
+
+        <div class="container">
+
+            <span class="badge bg-danger mb-3">
+                BREAKING NEWS
+            </span>
+
+            <h1>Un regard neuf sur l'actualité</h1>
+
+            <p>Toute l'information au même endroit.</p>
+
+            <a href="{% url 'blog.index' %}" class="btn btn-light btn-lg">
+                Découvrir
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="py-5">
+
+    <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <h2>Dernières actualités</h2>
+
+            <a href="{% url 'blog.index' %}" class="btn btn-outline-primary">
+                Voir tout
+            </a>
+
+        </div>
+
+        <div class="row">
+
+            {% for post in latest_posts %}
+
+                {% include 'includes/article_card.html' %}
+
+            {% empty %}
+
+                <div class="col-12">
+                    <div class="alert alert-warning">
+                        Aucun article publié.
+                    </div>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
