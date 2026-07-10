@@ -1,74 +1,62 @@
-{% extends 'base.html' %}
-
-{% block title %}Actualités{% endblock %}
-
+{% extends 'base.html' %} 
+{% block title %}
+Actualités
+{% endblock %} 
 {% block content %}
 
 <div class="container py-5">
+  <div class="row">
+    <!-- Articles -->
+    <div class="col-lg-9">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Toutes les actualités</h2>
 
-    <div class="row">
-        <!-- Articles -->
-        <div class="col-lg-9">
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-
-                <h2 class="fw-bold">Toutes les actualités</h2>
-
-                <span class="badge bg-dark">
-
-                    {{ posts.count }} article{{ posts.count|pluralize }}
-
-                </span>
-
-            </div>
-            <div class="row">
-                {% for post in posts %}
-
-                    {% with card_class="col-lg-6 col-md-6" %}
-                        {% include 'includes/article_card.html' %}
-                    {% endwith %}
-
-                {% empty %}
-                    <div class="col-12">
-
-                        <div class="alert alert-warning">
-                            Aucun article publié.
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
+        <span class="badge bg-dark">
+          {{ posts.count }} article{{ posts.count|pluralize }}
+        </span>
+      </div>
+      <div class="row">
+        {% for post in posts %} {% with card_class="col-lg-6 col-md-6" %} {%include 'includes/article_card.html' %} {% endwith %} {% empty %}
+        <div class="col-12">
+          <div class="alert alert-warning">Aucun article publié.</div>
         </div>
-        <!-- Sidebar -->
-        <div class="col-lg-3">
-
-            <div class="card sidebar-card p-4 sticky-top">
-
-                <h5 class="fw-bold">
-
-                    Recherche
-
-                </h5>
-
-                <form method="GET">
-
-                    <input
-                        type="text"
-                        name="search"
-                        value="{{ search|default:'' }}"
-                        class="form-control"
-                        placeholder="Rechercher...">
-
-                </form>
-                <hr>
-                <h5 class="fw-bold">
-                    Catégories
-                </h5>
-                {% for category in categories %}
-                    <p>{{ category.name }}</p>
-                {% endfor %}
-            </div>
-        </div>
+        {% endfor %}
+      </div>
     </div>
+    <!-- Sidebar -->
+    <div class="col-lg-3">
+      <div class="card sidebar-card p-4 sticky-top">
+        <h5 class="fw-bold">Recherche</h5>
+
+        <form method="GET">
+          <input
+            type="text"
+            name="search"
+            value="{{ search|default:'' }}"
+            class="form-control"
+            placeholder="Rechercher..."
+          />
+        </form>
+        <hr />
+        <h5 class="fw-bold">Catégories</h5>
+        {% for category in categories %}
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span>{{ category.name }}</span>
+
+          <span class="badge rounded-pill bg-light text-dark">
+            {{ category.posts.count }}
+          </span>
+        </div>
+
+        {% empty %}
+
+        <p>Aucune catégorie.</p>
+
+        {% endfor %}
+      </div>
+    </div>
+  </div>
 </div>
 
 {% endblock %}

@@ -61,6 +61,7 @@ class Post(models.Model):
         related_name="posts"
     )
 
+    views = models.PositiveIntegerField(default=0)
     class Meta:
         ordering = ["-created_at"]
         verbose_name = "Article"

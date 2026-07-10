@@ -3,8 +3,9 @@ from blog.models import Post, Category
 
 
 def home(request):
-    latest_posts = Post.objects.filter(status="Published").order_by("-created_at")[:6]
     featured_post = Post.objects.filter(status="Published").order_by("-created_at").first()
+    latest_posts = Post.objects.filter(status="Published").order_by("-created_at")[:6]
+    
     categories = Category.objects.all()
 
     context = {
