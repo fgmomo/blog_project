@@ -1,65 +1,83 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <title>
-
-        {% block title %}
-            OM News
-        {% endblock %}
-
-    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <title>{% block title %} OM News {% endblock %}</title>
 
     <!-- Bootstrap -->
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
 
     <!-- Bootstrap Icons -->
 
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
 
     <!-- Google Font -->
 
-    <link rel="preconnect"
-          href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
 
-    <link rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-          rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- CSS -->
 
-    <link rel="stylesheet"
-          href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
 
-</head>
+  <body>
+    {% include 'includes/navbar.html' %} {% block content %} {% endblock %} {%include 'includes/footer.html' %}
 
-<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
-{% include 'includes/navbar.html' %}
+    <script src="{% static 'js/script.js' %}"></script>
+    <script>
+      document.querySelectorAll(".like-btn").forEach((btn) => {
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
 
-{% block content %}
+          fetch("/blog/like/" + this.dataset.slug + "/")
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.error) {
+                window.location.href = "/accounts/login/";
+                return;
+              }
 
-{% endblock %}
+              this.querySelector("span").textContent = data.likes;
 
-{% include 'includes/footer.html' %}
+              const icon = this.querySelector("i");
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+              if (data.liked) {
+                icon.classList.remove("bi-heart");
+                icon.classList.add("bi-heart-fill");
 
-<script src="{% static 'js/script.js' %}"></script>
+                this.classList.add("liked");
+              } else {
+                icon.classList.remove("bi-heart-fill");
+                icon.classList.add("bi-heart");
 
-</body>
-
+                this.classList.remove("liked");
+              }
+            });
+        });
+      });
+    </script>
+  </body>
 </html>

@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
+from django.http import JsonResponse
 
 from .models import PostLike
 from blog.models import Post
@@ -8,19 +9,52 @@ from blog.models import Post
 @login_required
 def like_post(request, slug):
 
-    post = get_object_or_404(Post, slug=slug)
+    if not request.user.is_authenticated:
+
+        return JsonResponse({
+
+            "error": "login"
+
+        })
+
+    post = get_object_or_404(
+
+        Post,
+
+        slug=slug
+
+    )
 
     like = PostLike.objects.filter(
-        user=request.user,
-        post=post
-    ).first()
 
-    if like:
+        post=post,
+
+        user=request.user
+
+    )
+
+    if like.exists():
+
         like.delete()
+
+        liked = False
+
     else:
+
         PostLike.objects.create(
-            user=request.user,
-            post=post
+
+            post=post,
+
+            user=request.user
+
         )
 
-    return redirect("blog.detail", slug=slug)
+        liked = True
+
+    return JsonResponse({
+
+        "liked": liked,
+
+        "likes": post.likes.count()
+
+    })

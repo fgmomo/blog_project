@@ -1,90 +1,51 @@
 {% load blog_extras %}
 <div class="{{ card_class|default:'col-lg-4 col-md-6' }} mb-4">
-
-<div class="news-card">
-
+  <div class="news-card">
     <a href="{% url 'blog.detail' post.slug %}" class="news-link">
+      <div class="news-image">
+        {% if post.image %}
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" />
+        {% else %}
+        <img src="https://placehold.co/800x500" alt="OM News" />
+        {% endif %}
 
-        <div class="news-image">
+        <span class="category-badge"> {{ post.category.name }} </span>
+      </div>
 
-            {% if post.image %}
-                <img src="{{ post.image.url }}" alt="{{ post.title }}">
-            {% else %}
-                <img src="https://placehold.co/800x500" alt="OM News">
-            {% endif %}
+      <div class="news-content">
+        <h3 class="news-title">{{ post.title }}</h3>
 
-            <span class="category-badge">
+        <p class="news-summary">{{ post.content|truncatewords:18 }}</p>
 
-                {{ post.category.name }}
+        <div class="news-meta">
+          <span> Publié par <strong>{{ post.author.username }}</strong> </span>
 
-            </span>
+          <span class="dot">•</span>
 
+          <span> {{ post.created_at|time_since }} </span>
         </div>
-
-        <div class="news-content">
-
-            <h3 class="news-title">
-
-                {{ post.title }}
-
-            </h3>
-
-            <p class="news-summary">
-
-                {{ post.content|truncatewords:18 }}
-
-            </p>
-
-            <div class="news-meta">
-
-                <span>
-
-                    Publié par <strong>{{ post.author.username }}</strong>
-
-                </span>
-
-                <span class="dot">•</span>
-
-                <span>
-
-                    {{ post.created_at|time_since }}
-
-                </span>
-
-            </div>
-
-        </div>
-
+      </div>
     </a>
 
-   <div class="news-actions">
-
-    <button class="like-btn">
-
-        <i class="bi bi-heart-fill"></i>
+    <div class="news-actions">
+      <button
+    class="like-btn {% if post.id in liked_posts %}liked{% endif %}" data-slug="{{ post.slug }}">
+        <i class="bi {% if post.id in liked_posts %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
 
         <span>{{ post.likes.count }}</span>
+      </button>
 
-    </button>
-
-    <a href="{% url 'blog.detail' post.slug %}#comments">
-
+      <a href="{% url 'blog.detail' post.slug %}#comments">
         <i class="bi bi-chat"></i>
 
         <span>{{ post.comments.count }}</span>
+      </a>
 
-    </a>
-
-    <span>
-
+      <span>
         <i class="bi bi-eye"></i>
 
         {{ post.views }}
-
-    </span>
-
-</div>
-
-</div>
-
+      </span>
+    </div>
+  </div>
 </div>

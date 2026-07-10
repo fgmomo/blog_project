@@ -1,12 +1,25 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Post, Category
+from django.http import JsonResponse
 
-
+from .models import Post
+from reactions.models import PostLike, CommentLike
 def index(request):
 
     search = request.GET.get("search")
 
     posts = Post.objects.filter(status="Published")
+    liked_posts = []
+
+    if request.user.is_authenticated:
+        liked_posts = list(
+            PostLike.objects.filter(
+                user=request.user
+            ).values_list(
+                "post_id",
+                flat=True
+            )
+        )
 
     if search:
         posts = posts.filter(title__icontains=search)
@@ -17,6 +30,7 @@ def index(request):
         "posts": posts.order_by("-created_at"),
         "categories": categories,
         "search": search,
+        "liked_posts": liked_posts,
     }
 
     return render(request, "blog/index.html", context)
@@ -33,6 +47,14 @@ def detail(request, slug):
     # Incrémente le nombre de vues
     viewed_posts = request.session.get("viewed_posts", [])
 
+    liked = False
+
+    if request.user.is_authenticated:
+        liked = PostLike.objects.filter(
+            post=post,
+            user=request.user
+        ).exists()
+
     if post.id not in viewed_posts:
         post.views += 1
         post.save(update_fields=["views"])
@@ -41,11 +63,41 @@ def detail(request, slug):
         request.session["viewed_posts"] = viewed_posts
 
     context = {
-        "post": post
+        "post": post,
+        "liked": liked,
     }
-
+    
     return render(
         request,
         "blog/detail.html",
         context
     )
+
+def like_post(request, slug):
+
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            "error": "Vous devez être connecté."
+        }, status=401)
+
+    post = get_object_or_404(Post, slug=slug)
+
+    like = PostLike.objects.filter(
+        post=post,
+        user=request.user
+    )
+
+    if like.exists():
+        like.delete()
+        liked = False
+    else:
+        PostLike.objects.create(
+            post=post,
+            user=request.user
+        )
+        liked = True
+
+    return JsonResponse({
+        "liked": liked,
+        "likes": post.likes.count()
+    })
