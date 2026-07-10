@@ -3,8 +3,10 @@ from . import views
 
 urlpatterns = [
 
-    path('post-like/', views.post_like, name='post.like'),
-
-    path('comment-like/', views.comment_like, name='comment.like'),
+    path(
+        "post/<slug:slug>/",
+        views.like_post,
+        name="like_post"
+    ),
 
 ]

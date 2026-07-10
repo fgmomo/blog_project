@@ -1,116 +1,90 @@
+{% load blog_extras %}
 <div class="{{ card_class|default:'col-lg-4 col-md-6' }} mb-4">
-
-<a href="{% url 'blog.detail' post.slug %}"
-   class="text-decoration-none">
 
 <div class="news-card">
 
-    <div class="news-image">
+    <a href="{% url 'blog.detail' post.slug %}" class="news-link">
 
-        {% if post.image %}
+        <div class="news-image">
 
-            <img src="{{ post.image.url }}" alt="{{ post.title }}">
+            {% if post.image %}
+                <img src="{{ post.image.url }}" alt="{{ post.title }}">
+            {% else %}
+                <img src="https://placehold.co/800x500" alt="OM News">
+            {% endif %}
 
-        {% else %}
+            <span class="category-badge">
 
-            <img src="https://placehold.co/800x500" alt="OM News">
+                {{ post.category.name }}
 
-        {% endif %}
+            </span>
 
-        <span class="category-badge">
+        </div>
 
-            {{ post.category.name }}
+        <div class="news-content">
 
-        </span>
+            <h3 class="news-title">
 
-    </div>
+                {{ post.title }}
 
-    <div class="news-content">
+            </h3>
 
-        <h3 class="news-title">
+            <p class="news-summary">
 
-            {{ post.title }}
+                {{ post.content|truncatewords:18 }}
 
-        </h3>
+            </p>
 
-        <p class="news-summary">
+            <div class="news-meta">
 
-            {{ post.content|truncatewords:18 }}
+                <span>
 
-        </p>
+                    Publié par <strong>{{ post.author.username }}</strong>
 
-        <div class="news-meta">
+                </span>
 
-    <span>
+                <span class="dot">•</span>
 
-        Publié par <strong>{{ post.author.username }}</strong>
+                <span>
 
-    </span>
+                    {{ post.created_at|time_since }}
 
-    <span class="dot">•</span>
-
-    <span>
-
-        il y a 2 min
-
-    </span>
-
-</div>
-
-<!-- <div class="news-stats">
-
-    <span>
-
-        {{ post.postlike_set.count }} J'aime
-
-    </span>
-
-    <span>
-
-        {{ post.comments.count }} commentaires
-
-    </span>
-
-    <span>
-
-        {{ post.views }} vues
-
-    </span>
-
-</div> -->
-
-        <div class="news-info mt-3">
-
-            <div>
-
-                <i class="bi bi-heart"></i>
-
-                {{ post.postlike_set.count }}
-
-            </div>
-
-            <div>
-
-                <i class="bi bi-chat"></i>
-
-                {{ post.comments.count }}
-
-            </div>
-
-            <div>
-
-                <i class="bi bi-eye"></i>
-
-                {{ post.views }}
+                </span>
 
             </div>
 
         </div>
 
-    </div>
+    </a>
+
+   <div class="news-actions">
+
+    <button class="like-btn">
+
+        <i class="bi bi-heart-fill"></i>
+
+        <span>{{ post.likes.count }}</span>
+
+    </button>
+
+    <a href="{% url 'blog.detail' post.slug %}#comments">
+
+        <i class="bi bi-chat"></i>
+
+        <span>{{ post.comments.count }}</span>
+
+    </a>
+
+    <span>
+
+        <i class="bi bi-eye"></i>
+
+        {{ post.views }}
+
+    </span>
 
 </div>
 
-</a>
+</div>
 
 </div>
