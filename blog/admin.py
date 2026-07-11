@@ -18,6 +18,10 @@ class PostAdmin(admin.ModelAdmin):
         "status",
         "created_at",
     )
+    
+    list_display_links = (
+        "title",
+    )
 
     list_filter = (
         "status",
