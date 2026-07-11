@@ -64,14 +64,10 @@
 
         {% if user.is_authenticated %}
 
-        <form>
-          <textarea
-            class="form-control mb-3"
-            rows="4"
-            placeholder="Écrire un commentaire..."
-          ></textarea>
+        <form method="POST">
+          {% csrf_token %} {{ form.content }}
 
-          <button class="btn btn-primary">Publier</button>
+          <button class="btn btn-primary mt-3">Publier</button>
         </form>
 
         {% else %}
@@ -79,6 +75,87 @@
         <div class="alert alert-light">Connectez-vous pour commenter.</div>
 
         {% endif %}
+      </div>
+      <div class="comments-list mt-5">
+        {% for comment in post.comments.all %} {% if not comment.parent %}
+
+        <div class="comment-card">
+          <div class="comment-header">
+            <div class="avatar">{{ comment.user.username|first|upper }}</div>
+
+            <div>
+              <strong> {{ comment.user.username }} </strong>
+
+              <br />
+
+              <small> {{ comment.created_at|time_since }} </small>
+            </div>
+          </div>
+
+          <div class="comment-body">{{ comment.content }}</div>
+
+          <div class="comment-actions">
+            <button
+              class="comment-like-btn btn btn-sm {% if user in comment.likes.all %}btn-danger{% else %}btn-outline-danger{% endif %}"
+              data-id="{{ comment.id }}"
+            >
+              <i
+                class="bi {% if user in comment.likes.all %}bi-heart-fill{% else %}bi-heart{% endif %}"
+              ></i>
+
+              <span>{{ comment.likes.count }}</span>
+            </button>
+
+            <button
+              class="btn btn-sm btn-link reply-btn"
+              data-id="{{ comment.id }}"
+            >
+              Répondre
+            </button>
+          </div>
+
+          <form method="POST" class="reply-form d-none mt-3">
+            {% csrf_token %}
+
+            <input type="hidden" name="parent" value="{{ comment.id }}" />
+
+            {{ form.content }}
+
+            <button class="btn btn-primary mt-2">Répondre</button>
+          </form>
+
+          {% for reply in comment.replies.all %}
+
+          <div class="reply-card">
+            <div class="comment-header">
+              <div class="avatar">{{ reply.user.username|first|upper }}</div>
+
+              <div>
+                <strong> {{ reply.user.username }} </strong>
+
+                <br />
+
+                <small> {{ reply.created_at|time_since }} </small>
+              </div>
+            </div>
+
+            <div class="comment-body">{{ reply.content }}</div>
+
+            <div class="comment-actions">
+              <button
+                class="comment-like-btn btn btn-sm btn-outline-danger"
+                data-id="{{ reply.id }}"
+              >
+                <i class="bi bi-heart"></i>
+
+                <span>{{ reply.likes.count }}</span>
+              </button>
+            </div>
+          </div>
+
+          {% endfor %}
+        </div>
+        {% endif %} {% endfor %}
       </div>
     </div>
   </div>

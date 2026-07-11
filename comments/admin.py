@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Comment, CommentReply
-
+from .models import Comment
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
@@ -21,15 +20,3 @@ class CommentAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(CommentReply)
-class CommentReplyAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "user",
-        "comment",
-        "created_at",
-    )
-
-    search_fields = (
-        "content",
-    )

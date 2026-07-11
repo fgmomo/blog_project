@@ -9,4 +9,10 @@ urlpatterns = [
         name="like_post"
     ),
 
+    path(
+    "comment-like/<int:id>/",
+    views.comment_like,
+    name="comment_like",
+)
+
 ]

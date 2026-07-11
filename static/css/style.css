@@ -177,7 +177,7 @@ body{
 
 .news-card:hover{
 
-    transform:translateY(-3px);
+    transform:translateY(-2px);
 
     box-shadow:0 20px 45px rgba(0,0,0,.6);
 
@@ -767,13 +767,13 @@ body{
 .news-card{
 
     cursor:pointer;
-    transition:.3s;
+    transition:.2s;
 
 }
 
 .news-card:hover{
 
-    transform:translateY(-3px);
+    transform:translateY(-2px);
     box-shadow:0 18px 45px rgba(0,0,0,.12);
 
 }
@@ -908,5 +908,154 @@ body{
     color:#e63946;
 
     transform:scale(1.15);
+
+}
+
+/*==============================
+        COMMENTS
+==============================*/
+
+.comments-card{
+
+    background:#fff;
+
+    border-radius:22px;
+
+    padding:35px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.05);
+
+}
+
+.comment-card{
+
+    padding:20px 0;
+
+    border-bottom:1px solid #efefef;
+
+}
+
+.comment-card:last-child{
+
+    border:none;
+
+}
+
+.comment-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:10px;
+
+}
+
+.comment-header strong{
+
+    color:#222;
+
+}
+
+.comment-header span{
+
+    color:#888;
+
+    font-size:.9rem;
+
+}
+
+.comment-body{
+
+    line-height:1.8;
+
+    color:#555;
+
+}
+.comments-list{
+
+    margin-top:40px;
+
+}
+
+.comment-card{
+
+    background:#fff;
+
+    border-radius:20px;
+
+    padding:25px;
+
+    margin-bottom:25px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.05);
+
+}
+
+.reply-card{
+
+    margin-left:70px;
+
+    margin-top:20px;
+
+    padding-left:25px;
+
+    border-left:3px solid #ececec;
+
+}
+
+.comment-header{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+}
+
+.avatar{
+
+    width:48px;
+
+    height:48px;
+
+    border-radius:50%;
+
+    background:linear-gradient(135deg,#8E24AA,#C158DC);
+
+    color:#fff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-weight:700;
+
+    font-size:18px;
+
+}
+
+.comment-body{
+
+    margin:20px 0;
+
+    line-height:1.8;
+
+}
+
+.comment-actions{
+
+    display:flex;
+
+    gap:15px;
+
+}
+
+.reply-form{
+
+    margin-top:20px;
 
 }
