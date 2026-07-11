@@ -26,12 +26,19 @@ def index(request):
         posts = posts.filter(title__icontains=search)
 
     categories = Category.objects.all()
+    popular_posts = Post.objects.filter(status="Published").order_by("-views")[:2]
 
+    recent_posts = Post.objects.filter(status="Published").order_by("-created_at")[:2]
+    
     context = {
         "posts": posts.order_by("-created_at"),
         "categories": categories,
         "search": search,
         "liked_posts": liked_posts,
+
+        "popular_posts": popular_posts,
+        "recent_posts": recent_posts,
+
     }
 
     return render(request, "blog/index.html", context)

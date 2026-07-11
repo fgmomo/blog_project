@@ -1,49 +1,155 @@
 {% load static %}
-<footer class="footer mt-5">
+{% load static %}
+
+<footer class="footer">
 
     <div class="container">
 
-        <div class="row">
+        <div class="row gy-5">
 
-            <div class="col-lg-6">
+            <!-- Logo -->
+            <div class="col-lg-4">
 
-                <h3>OM News</h3>
+                <div class="footer-brand">
 
-                <p>
+                    <img src="{% static 'images/logo.jpg' %}" alt="OM News">
 
-                    Toute l'actualité en temps réel.
+                    <div>
 
-                </p>
+                        <h4>OM News</h4>
+
+                        <p>
+                            Toute l'actualité nationale et internationale,
+                            en temps réel.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="footer-social">
+
+                    <a href="#"><i class="bi bi-facebook"></i></a>
+
+                    <a href="#"><i class="bi bi-twitter-x"></i></a>
+
+                    <a href="#"><i class="bi bi-instagram"></i></a>
+
+                    <a href="#"><i class="bi bi-linkedin"></i></a>
+
+                </div>
 
             </div>
 
-            <div class="col-lg-3">
+            <!-- Navigation -->
+
+            <div class="col-lg-2">
 
                 <h5>Navigation</h5>
 
-                <ul>
+                <ul class="footer-links">
 
-                    <li>Accueil</li>
+                    <li>
 
-                    <li>Actualités</li>
+                        <a href="{% url 'home' %}">
+                            Accueil
+                        </a>
 
-                    <li>Catégories</li>
+                    </li>
+
+                    <li>
+
+                        <a href="{% url 'blog.index' %}">
+                            Actualités
+                        </a>
+
+                    </li>
+
+                    <li>
+
+                        <a href="#">
+                            Catégories
+                        </a>
+
+                    </li>
 
                 </ul>
 
             </div>
 
+            <!-- Services -->
+
             <div class="col-lg-3">
 
-                <h5>Suivez-nous</h5>
+                <h5>Services</h5>
 
-                <i class="bi bi-facebook"></i>
+                <ul class="footer-links">
 
-                <i class="bi bi-twitter-x"></i>
+                    <li>Articles</li>
 
-                <i class="bi bi-instagram"></i>
+                    <li>Commentaires</li>
+
+                    <li>Recherche</li>
+
+                    <li>Compte utilisateur</li>
+
+                </ul>
 
             </div>
+
+            <!-- Contact -->
+
+            <div class="col-lg-3">
+
+                <h5>Contact</h5>
+
+                <ul class="footer-contact">
+
+                    <li>
+
+                        <i class="bi bi-envelope"></i>
+
+                        contact@omnews.ml
+
+                    </li>
+
+                    <li>
+
+                        <i class="bi bi-telephone"></i>
+
+                        +223 70 00 00 00
+
+                    </li>
+
+                    <li>
+
+                        <i class="bi bi-geo-alt"></i>
+
+                        Bamako, Mali
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        <div class="footer-bottom">
+
+            <span>
+
+                © 2026 OM News — Tous droits réservés.
+
+            </span>
+
+            <span>
+
+                Conçu par Mohamed & Helene
+
+            </span>
 
         </div>
 

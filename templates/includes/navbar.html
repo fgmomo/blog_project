@@ -1,146 +1,118 @@
 {% load static %}
 
 <nav class="navbar navbar-expand-lg bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+      <img src="{% static 'images/logo.jpg' %}" height="45" class="me-2" />
+      <!-- <span>OM News</span> -->
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-    <div class="container">
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item">
+          <a
+            class="nav-link {% if request.path == '/' %}active{% endif %}"
+            href="{% url 'home' %}"
+          >
+            Accueil
+          </a>
+        </li>
 
-        <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+        <li class="nav-item">
+          <a
+            class="nav-link {% if '/blog' in request.path %}active{% endif %}"
+            href="{% url 'blog.index' %}"
+          >
+            Actualités
+          </a>
+        </li>
+      </ul>
 
-            <img src="{% static 'images/logo.jpg' %}" height="45" class="me-2">
-            <!-- <span>OM News</span> -->
-        </a>
-        <button class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarNav">
+      <form class="d-flex me-3" method="GET" action="{% url 'blog.index' %}">
+        <div class="search-box">
 
-            <span class="navbar-toggler-icon"></span>
+            <i class="bi bi-search"></i>
 
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-
-            <ul class="navbar-nav mx-auto">
-
-                <li class="nav-item">
-
-                    <a class="nav-link" href="{% url 'home' %}">
-                        Accueil
-                    </a>
-
-                </li>
-
-                <li class="nav-item">
-
-                    <a class="nav-link" href="{% url 'blog.index' %}">
-                        Actualités
-                    </a>
-
-                </li>
-
-            </ul>
-
-            <form class="d-flex me-3"
-                  method="GET"
-                  action="{% url 'blog.index' %}">
-
-                <div class="input-group">
-
-                    <input
-                        class="form-control"
-                        type="search"
-                        name="search"
-                        placeholder="Rechercher...">
-
-                    <button class="btn btn-primary">
-
-                        <i class="bi bi-search"></i>
-
-                    </button>
-
-                </div>
-
-            </form>
-
-            {% if user.is_authenticated %}
-
-            <div class="dropdown">
-
-                <button
-                    class="btn btn-primary dropdown-toggle"
-                    data-bs-toggle="dropdown">
-
-                    <i class="bi bi-person-circle"></i>
-
-                    {{ user.username }}
-
-                </button>
-
-                <ul class="dropdown-menu dropdown-menu-end">
-
-                    <li>
-
-                        <a class="dropdown-item" href="#">
-
-                            <i class="bi bi-person"></i>
-
-                            Mon profil
-
-                        </a>
-
-                    </li>
-
-                    <li>
-
-                        <a class="dropdown-item" href="#">
-
-                            <i class="bi bi-pencil-square"></i>
-
-                            Nouvel article
-
-                        </a>
-
-                    </li>
-
-                    <li><hr class="dropdown-divider"></li>
-
-                    <li>
-
-                        <a class="dropdown-item text-danger"
-                           href="{% url 'logout' %}">
-
-                            <i class="bi bi-box-arrow-right"></i>
-
-                            Déconnexion
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-            </div>
-
-            {% else %}
-
-            <a href="{% url 'login' %}"
-               class="btn btn-outline-primary me-2">
-
-                Connexion
-
-            </a>
-
-            <a href="{% url 'signup' %}"
-               class="btn btn-primary">
-
-                Inscription
-
-            </a>
-
-            {% endif %}
+            <input
+                type="search"
+                name="search"
+                placeholder="Rechercher une actualité...">
 
         </div>
 
-    </div>
+          <!-- <button class="btn btn-primary">
+            <i class="bi bi-search"></i>
+          </button> -->
+        </div>
+      </form>
 
+      {% if user.is_authenticated %}
+
+      <div class="dropdown">
+        <button class="user-menu" data-bs-toggle="dropdown">
+
+            <div class="avatar">
+
+                {{ user.username|first|upper }}
+
+            </div>
+
+            <span>
+
+                {{ user.username }}
+
+            </span>
+
+            <i class="bi bi-chevron-down"></i>
+
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li>
+            <a class="dropdown-item" href="#">
+              <i class="bi bi-person"></i>
+
+              Mon profil
+            </a>
+          </li>
+
+          <li>
+            <a class="dropdown-item" href="#">
+              <i class="bi bi-pencil-square"></i>
+
+              Nouvel article
+            </a>
+          </li>
+
+          <li><hr class="dropdown-divider" /></li>
+
+          <li>
+            <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+              <i class="bi bi-box-arrow-right"></i>
+
+              Déconnexion
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      {% else %}
+
+      <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">
+        Connexion
+      </a>
+
+      <a href="{% url 'signup' %}" class="btn btn-primary"> Inscription </a>
+
+      {% endif %}
+    </div>
+  </div>
 </nav>

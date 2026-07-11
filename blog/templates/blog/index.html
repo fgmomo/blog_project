@@ -1,8 +1,6 @@
-{% extends 'base.html' %} 
-{% block title %}
-Actualités
-{% endblock %} 
-{% block content %}
+{% extends 'base.html' %} {% block title %} Actualités {% endblock %} 
+{% block content %} 
+{% load blog_extras %}
 
 <div class="container py-5">
   <div class="row">
@@ -16,7 +14,8 @@ Actualités
         </span>
       </div>
       <div class="row">
-        {% for post in posts %} {% with card_class="col-lg-6 col-md-6" %} {%include 'includes/article_card.html' %} {% endwith %} {% empty %}
+        {% for post in posts %} {% with card_class="col-lg-6 col-md-6" %}
+        {%include 'includes/article_card.html' %} {% endwith %} {% empty %}
         <div class="col-12">
           <div class="alert alert-warning">Aucun article publié.</div>
         </div>
@@ -38,7 +37,45 @@ Actualités
           />
         </form>
         <hr />
-        <h5 class="fw-bold">Catégories</h5>
+
+        <h5 class="fw-bold mb-3">Articles populaires</h5>
+
+        {% for article in popular_posts %}
+
+        <a href="{% url 'blog.detail' article.slug %}" class="sidebar-post">
+          <div>
+            <div class="sidebar-title">{{ article.title }}</div>
+
+            <small>
+              <i class="bi bi-eye"></i>
+
+              {{ article.views }} vues
+            </small>
+          </div>
+        </a>
+
+        {% endfor %}
+
+        <!-- <hr /> -->
+
+        <!-- <h5 class="fw-bold mb-3">Articles récents</h5>
+
+        {% for article in recent_posts %}
+
+        <a href="{% url 'blog.detail' article.slug %}" class="sidebar-post">
+          <div>
+            <div class="sidebar-title">{{ article.title }}</div>
+
+            <small> {{ article.created_at|time_since }} </small>
+          </div>
+        </a>
+
+        {% endfor %}
+
+        <hr /> -->
+
+        <!-- <h5 class="fw-bold">Catégories</h5>
+
         {% for category in categories %}
 
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -53,7 +90,7 @@ Actualités
 
         <p>Aucune catégorie.</p>
 
-        {% endfor %}
+        {% endfor %} -->
       </div>
     </div>
   </div>
