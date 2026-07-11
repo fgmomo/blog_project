@@ -19,9 +19,9 @@ class Comment(models.Model):
 
     parent = models.ForeignKey(
         "self",
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
-        on_delete=models.CASCADE,
         related_name="replies"
     )
 
@@ -30,7 +30,4 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ["created_at"]
-
-    def __str__(self):
-        return f"{self.user.username} - {self.post.title}"
+        ordering = ["-created_at"]

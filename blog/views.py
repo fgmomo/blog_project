@@ -36,8 +36,67 @@ def index(request):
 
     return render(request, "blog/index.html", context)
 
-
 def detail(request, slug):
+
+    post = get_object_or_404(
+        Post,
+        slug=slug,
+        status="Published"
+    )
+
+    # Gestion des vues
+    viewed_posts = request.session.get("viewed_posts", [])
+
+    if post.id not in viewed_posts:
+        post.views += 1
+        post.save(update_fields=["views"])
+
+        viewed_posts.append(post.id)
+        request.session["viewed_posts"] = viewed_posts
+
+    # Vérifie si l'utilisateur a liké
+    liked = False
+
+    if request.user.is_authenticated:
+        liked = PostLike.objects.filter(
+            post=post,
+            user=request.user
+        ).exists()
+
+    form = CommentForm()
+
+    if request.method == "POST" and request.user.is_authenticated:
+
+        form = CommentForm(request.POST)
+
+        if form.is_valid():
+
+            comment = form.save(commit=False)
+
+            comment.user = request.user
+            comment.post = post
+
+            parent_id = request.POST.get("parent")
+
+            if parent_id:
+                comment.parent_id = parent_id
+
+            comment.save()
+
+            return redirect("blog.detail", slug=slug)
+
+    context = {
+        "post": post,
+        "liked": liked,
+        "form": form,
+    }
+
+    return render(
+        request,
+        "blog/detail.html",
+        context
+    )
+
 
     post = get_object_or_404(
         Post,

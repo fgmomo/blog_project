@@ -40,13 +40,6 @@
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   </head>
-  <script>
-    document.querySelectorAll(".reply-btn").forEach((btn) => {
-      btn.onclick = function () {
-        this.parentElement.nextElementSibling.classList.toggle("d-none");
-      };
-    });
-  </script>
   <body>
     {% include 'includes/navbar.html' %} {% block content %} {% endblock %}
     {%include 'includes/footer.html' %}
@@ -120,5 +113,20 @@
         };
       });
     </script>
+    <script>
+document.querySelectorAll(".reply-btn").forEach(button => {
+
+    button.addEventListener("click", function(){
+
+        const card = this.closest(".comment-card");
+
+        const form = card.querySelector(".reply-form");
+
+        form.classList.toggle("d-none");
+
+    });
+
+});
+</script>
   </body>
 </html>
