@@ -25,7 +25,9 @@ body{
 
 .navbar{
 
-    height:82px;
+    min-height:82px;
+    overflow:visible;
+    /* height:82px; */
 
     backdrop-filter:blur(18px);
 
@@ -34,6 +36,9 @@ body{
     border-bottom:1px solid #ececec;
 
     box-shadow:none;
+    position:sticky;
+    top:0;
+    z-index:9999;
 
 }
 body{
@@ -110,7 +115,7 @@ body{
 }
 
 .dropdown-menu{
-
+    z-index:10000;
     border:none;
     border-radius:16px;
     box-shadow:0 15px 40px rgba(0,0,0,.10);
@@ -170,6 +175,9 @@ body{
 
     border-radius:50px;
 
+    /* cursor:pointer; */
+
+
 }
 
 .avatar{
@@ -196,13 +204,9 @@ body{
 /*==========================
           HERO
 ===========================*/
-
 .hero{
-
-    height:75vh;
     position:relative;
-    overflow:hidden;
-
+    z-index:1;
 }
 
 .hero-image{
