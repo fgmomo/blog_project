@@ -1,7 +1,38 @@
 from django import template
 from django.utils import timezone
 
+from core.models import Advertisement
+
 register = template.Library()
+
+
+def _active_ads_queryset(placement):
+    today = timezone.localdate()
+    return Advertisement.objects.filter(
+        placement=placement,
+        is_active=True,
+        start_date__lte=today,
+        end_date__gte=today,
+    )
+
+
+@register.simple_tag
+def active_ad(placement):
+    return _active_ads_queryset(placement).first()
+
+
+@register.simple_tag
+def active_ads(placement):
+    return _active_ads_queryset(placement)
+
+
+@register.simple_tag(takes_context=True)
+def paginate_url(context, page_number):
+    """Reconstruit l'URL courante avec ?page=N, en gardant les autres paramètres (search, category...)."""
+    request = context["request"]
+    params = request.GET.copy()
+    params["page"] = page_number
+    return "?" + params.urlencode()
 
 
 @register.filter

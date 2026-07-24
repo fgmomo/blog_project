@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %} Nos services {% endblock %}
+{% block content %}
+
+<div class="container py-5">
+  <div class="page-header">
+    <div class="eyebrow">OM News</div>
+    <h1>Nos services</h1>
+    <p>Au-delà de l'actualité, OM News accompagne entreprises, institutions et particuliers avec une offre complète de production et de diffusion de contenu — de la couverture terrain à la stratégie de marque.</p>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-6 reveal">
+      <div class="service-card-v2">
+        <div class="service-card-v2-media">
+          <img src="https://picsum.photos/seed/om-events/900/650" alt="Couverture d'événements" loading="lazy">
+          <span class="service-icon-badge"><i class="bi bi-camera-reels"></i></span>
+        </div>
+        <div class="service-card-v2-body">
+          <h4>Couverture d'événements</h4>
+          <p>
+            Conférences de presse, lancements de produits, cérémonies officielles : nos équipes se déplacent avec caméra, appareil photo et micro pour capter l'instant et le restituer en reportage écrit, photo et vidéo, publié dans les heures qui suivent.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 reveal">
+      <div class="service-card-v2">
+        <div class="service-card-v2-media">
+          <img src="https://picsum.photos/seed/om-ads/900/650" alt="Partenariats et publicité" loading="lazy">
+          <span class="service-icon-badge"><i class="bi bi-megaphone"></i></span>
+        </div>
+        <div class="service-card-v2-body">
+          <h4>Partenariats & publicité</h4>
+          <p>
+            Bannières sur le site, mentions dans nos émissions, articles sponsorisés rédigés par notre rédaction : on construit avec vous un plan de visibilité qui touche une audience réellement engagée, pas juste des impressions.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 reveal">
+      <div class="service-card-v2">
+        <div class="service-card-v2-media">
+          <img src="https://picsum.photos/seed/om-subs/900/650" alt="Abonnements" loading="lazy">
+          <span class="service-icon-badge"><i class="bi bi-star"></i></span>
+        </div>
+        <div class="service-card-v2-body">
+          <h4>Abonnements</h4>
+          <p>
+            Des formats exclusifs, des dossiers approfondis et un accès prioritaire à nos enquêtes : nos formules d'abonnement financent un journalisme indépendant, sans dépendre uniquement de la publicité.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 reveal">
+      <div class="service-card-v2">
+        <div class="service-card-v2-media">
+          <img src="https://picsum.photos/seed/om-content/900/650" alt="Production de contenu" loading="lazy">
+          <span class="service-icon-badge"><i class="bi bi-pencil-square"></i></span>
+        </div>
+        <div class="service-card-v2-body">
+          <h4>Production de contenu</h4>
+          <p>
+            Rédaction d'articles, tournage et montage vidéo, animation d'émissions clé en main : notre rédaction met son savoir-faire éditorial au service d'entreprises et d'institutions qui veulent raconter leur histoire avec sérieux.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="service-contact mt-5 d-flex align-items-center gap-3 reveal">
+    <i class="bi bi-envelope-paper fs-3 text-primary"></i>
+    <div>
+      Intéressé par l'un de nos services ? Contactez-nous à
+      <strong>contact@omnews.ml</strong>.
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %} Abonnés newsletter {% endblock %}
+{% block dashboard_content %}
+
+<div class="page-header reveal">
+  <div class="eyebrow">Newsletter</div>
+  <h1>Abonnés</h1>
+</div>
+
+<div class="dashboard-filter-card reveal">
+  <div class="dashboard-filter-card-title"><i class="bi bi-funnel"></i> Rechercher</div>
+
+  <form method="GET" class="dashboard-search">
+    <i class="bi bi-search"></i>
+    <input type="text" name="search" value="{{ search }}" placeholder="Rechercher un email...">
+    {% if search %}
+    <a href="?" class="dashboard-search-clear"><i class="bi bi-x-lg"></i></a>
+    {% endif %}
+  </form>
+</div>
+
+<div class="dashboard-table-wrap reveal">
+  <table class="table dashboard-table">
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Statut</th>
+        <th>Inscrit le</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for subscriber in object_list %}
+      <tr>
+        <td>{{ subscriber.email }}</td>
+        <td>
+          <span class="badge {% if subscriber.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+            {% if subscriber.is_active %}Actif{% else %}Désabonné{% endif %}
+          </span>
+        </td>
+        <td>{{ subscriber.subscribed_at|date:"d/m/Y" }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="3" class="text-center text-muted py-4">Aucun abonné pour le moment.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% include 'includes/pagination.html' with page_obj=page_obj %}
+
+{% endblock %}

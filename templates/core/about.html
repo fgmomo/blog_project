@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %} À propos {% endblock %}
+{% block content %}
+
+<div class="container py-5">
+  <div class="page-header">
+    <div class="eyebrow">OM News</div>
+    <h1>À propos de nous</h1>
+    <p>
+      OM News est un média en ligne basé à Bamako, dédié à une information
+      accessible, vérifiée et proche des réalités maliennes.
+    </p>
+  </div>
+
+  <div class="row align-items-center g-5 mb-5 mission-section reveal">
+    <div class="col-lg-6">
+      <img
+        src="https://picsum.photos/seed/om-newsroom/900/700"
+        alt="La rédaction OM News"
+        class="mission-image"
+        loading="lazy"
+      >
+    </div>
+
+    <div class="col-lg-6">
+      <div class="eyebrow">Notre mission</div>
+      <h2>Informer vite, informer juste.</h2>
+      <p class="mission-text">
+        Depuis Bamako, notre rédaction couvre l'actualité nationale et
+        internationale, la culture, le sport et l'économie avec une exigence
+        constante de rigueur journalistique. Nous croyons à une information
+        accessible à tous, vérifiée avant d'être publiée, et proche des
+        réalités du terrain malien.
+      </p>
+    </div>
+  </div>
+
+  {% if team_members %}
+  <h3 class="fw-bold mb-4 reveal">Notre équipe</h3>
+
+  <div class="team-scroll reveal mb-5">
+    {% for member in team_members %}
+    <div class="team-card">
+      {% if member.photo %}
+      <img src="{{ member.photo.url }}" alt="{{ member.name }}" class="team-photo" />
+      {% else %}
+      <div class="avatar avatar-lg team-photo-fallback">{{ member.name|first|upper }}</div>
+      {% endif %}
+
+      <h5>{{ member.name }}</h5>
+      <span class="text-muted small">{{ member.role }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if partners %}
+  <h3 class="fw-bold mb-4 reveal">Nos partenaires</h3>
+
+  <div class="row g-4 align-items-center reveal">
+    {% for partner in partners %}
+    <div class="col-lg-2 col-md-3 col-4">
+      {% if partner.website_url %}
+      <a href="{{ partner.website_url }}" target="_blank" rel="noopener">
+      {% endif %}
+
+        {% if partner.logo %}
+        <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" class="partner-logo" />
+        {% else %}
+        <div class="partner-logo partner-logo-fallback">{{ partner.name }}</div>
+        {% endif %}
+
+      {% if partner.website_url %}
+      </a>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

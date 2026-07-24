@@ -30,6 +30,16 @@ Connexion
 
 {% endif %}
 
+{% if success %}
+
+<div class="alert alert-success">
+
+{{ success }}
+
+</div>
+
+{% endif %}
+
 <form method="POST">
 
 {% csrf_token %}
@@ -63,6 +73,10 @@ Se connecter
 </button>
 
 </form>
+
+<div class="text-center mt-3">
+  <a href="{% url 'password_reset' %}" class="small">Mot de passe oublié ?</a>
+</div>
 
 </div>
 

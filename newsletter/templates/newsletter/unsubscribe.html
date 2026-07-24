@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %} Désabonnement {% endblock %}
+{% block content %}
+
+<div class="container py-5">
+  <div class="page-header">
+    <div class="eyebrow">Newsletter</div>
+    <h1>Désabonnement confirmé</h1>
+    <p>{{ subscriber.email }} ne recevra plus la newsletter OM News. Vous pouvez vous réinscrire à tout moment depuis le pied de page.</p>
+  </div>
+
+  <a href="{% url 'home' %}" class="btn btn-primary">Retour à l'accueil</a>
+</div>
+
+{% endblock %}

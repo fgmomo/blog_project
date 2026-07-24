@@ -1,0 +1,70 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %} Campagnes newsletter {% endblock %}
+{% block dashboard_content %}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 reveal">
+  <div class="page-header mb-0">
+    <div class="eyebrow">Newsletter</div>
+    <h1 class="mb-0">Campagnes</h1>
+  </div>
+
+  <a href="{% url 'dashboard:campaign_create' %}" class="btn btn-primary">
+    <i class="bi bi-plus-lg"></i> Nouvelle campagne
+  </a>
+</div>
+
+<div class="dashboard-table-wrap reveal">
+  <table class="table dashboard-table">
+    <thead>
+      <tr>
+        <th>Sujet</th>
+        <th>Créée par</th>
+        <th>Statut</th>
+        <th>Date</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for campaign in campaigns %}
+      <tr>
+        <td>{{ campaign.subject }}</td>
+        <td>{{ campaign.created_by.username|default:"—" }}</td>
+        <td>
+          {% if campaign.is_sent %}
+          <span class="badge bg-success">Envoyée</span>
+          {% else %}
+          <span class="badge bg-secondary">Brouillon</span>
+          {% endif %}
+        </td>
+        <td>{{ campaign.created_at|date:"d/m/Y" }}</td>
+        <td class="text-end">
+          {% if not campaign.is_sent %}
+          <a href="{% url 'dashboard:campaign_update' campaign.pk %}" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-pencil"></i>
+          </a>
+          <form method="POST" action="{% url 'dashboard:campaign_send' campaign.pk %}" class="d-inline" onsubmit="return confirm('Envoyer cette campagne à tous les abonnés actifs ?');">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-outline-success" title="Envoyer">
+              <i class="bi bi-send"></i>
+            </button>
+          </form>
+          <a href="{% url 'dashboard:campaign_delete' campaign.pk %}" class="btn btn-sm btn-outline-danger">
+            <i class="bi bi-trash"></i>
+          </a>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="text-center text-muted py-4">Aucune campagne pour le moment.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if is_paginated %}
+{% include 'includes/pagination.html' with page_obj=page_obj %}
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{% if ads %}
+<div class="ad-card {{ extra_class }} reveal">
+  <span class="ad-label">Publicité</span>
+
+  <div id="{{ carousel_id }}" class="carousel slide ad-carousel" data-bs-ride="carousel" data-bs-interval="4000">
+    <div class="carousel-inner">
+      {% for ad in ads %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+        <a href="{% url 'core.ad_click' ad.pk %}" target="_blank" rel="noopener sponsored">
+          <img src="{{ ad.image.url }}" alt="{{ ad.title }}" class="ad-banner">
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if ads|length > 1 %}
+    <button class="carousel-control-prev" type="button" data-bs-target="#{{ carousel_id }}" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#{{ carousel_id }}" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    </button>
+
+    <div class="carousel-indicators ad-carousel-indicators">
+      {% for ad in ads %}
+      <button type="button" data-bs-target="#{{ carousel_id }}" data-bs-slide-to="{{ forloop.counter0 }}"
+        class="{% if forloop.first %}active{% endif %}" aria-current="{% if forloop.first %}true{% endif %}"
+        aria-label="Publicité {{ forloop.counter }}"></button>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endif %}

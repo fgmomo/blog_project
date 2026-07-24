@@ -2,7 +2,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-
-    path('add/', views.add_comment, name='comment.add'),
-
+    path("modifier/<int:id>/", views.edit_comment, name="comment.edit"),
 ]

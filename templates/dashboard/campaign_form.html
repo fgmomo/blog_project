@@ -1,0 +1,37 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %} {% if object %}Modifier{% else %}Nouvelle{% endif %} campagne {% endblock %}
+{% block dashboard_content %}
+
+<div class="page-header reveal">
+  <div class="eyebrow">Newsletter</div>
+  <h1>{% if object %}Modifier la campagne{% else %}Nouvelle campagne{% endif %}</h1>
+</div>
+
+{{ form.media }}
+
+<div class="dashboard-form-card reveal">
+  <form method="POST">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label class="form-label">Sujet</label>
+      {{ form.subject }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Contenu</label>
+      {{ form.body }}
+    </div>
+
+    {% if form.errors %}
+    <div class="alert alert-danger">{{ form.errors }}</div>
+    {% endif %}
+
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary">Enregistrer le brouillon</button>
+      <a href="{% url 'dashboard:campaign_list' %}" class="btn btn-outline-secondary">Annuler</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %} Paramètres du profil {% endblock %}
+{% block dashboard_content %}
+
+<div class="page-header reveal">
+  <div class="eyebrow">Compte</div>
+  <h1>Mon profil</h1>
+</div>
+
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <div class="profile-header reveal">
+    <div class="profile-header-avatar">
+      {% if user.profile.profile_picture %}
+      <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }}">
+      {% else %}
+      <div class="avatar avatar-lg">{{ user.username|first|upper }}</div>
+      {% endif %}
+
+      <label for="{{ form.profile_picture.id_for_label }}" class="profile-photo-edit" title="Changer la photo">
+        <i class="bi bi-camera"></i>
+      </label>
+    </div>
+
+    <div class="profile-header-info">
+      <h2>{{ user.username }}</h2>
+      <div class="text-muted">{{ user.email }}</div>
+
+      <div class="profile-header-meta">
+        <span><i class="bi bi-calendar3"></i> Membre depuis {{ user.date_joined|date:"F Y" }}</span>
+        <span><i class="bi bi-chat-dots"></i> {{ comments_count }} commentaire{{ comments_count|pluralize }}</span>
+        <span><i class="bi bi-heart"></i> {{ liked_count }} article{{ liked_count|pluralize }} aimé{{ liked_count|pluralize }}</span>
+        {% if user.is_staff %}
+        <span class="badge-brand badge rounded-pill">
+          {% if user.is_superuser %}Super admin{% else %}Staff{% endif %}
+        </span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="dashboard-form-card reveal">
+        <h5 class="profile-section-title">Informations du compte</h5>
+
+        <div class="mb-3">
+          <label class="form-label">Nom d'utilisateur</label>
+          <input type="text" class="form-control" value="{{ user.username }}" disabled>
+          <div class="form-text">Le nom d'utilisateur ne peut pas être changé.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          {{ form.email }}
+          {% if form.email.errors %}
+          <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-0 d-none">
+          {{ form.profile_picture }}
+        </div>
+
+        <button class="btn btn-primary mt-2">Enregistrer les modifications</button>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="dashboard-form-card reveal profile-tip-card">
+        <h5 class="profile-section-title"><i class="bi bi-info-circle"></i> Bon à savoir</h5>
+        <p class="text-muted mb-0">
+          Ta photo de profil est visible sur tes commentaires et ta page auteur.
+          Clique sur l'icône appareil photo au-dessus pour la changer — formats JPG, PNG ou WEBP, 5 Mo max.
+        </p>
+      </div>
+    </div>
+  </div>
+</form>
+
+{% endblock %}

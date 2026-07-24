@@ -1,7 +1,18 @@
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.sitemaps.views import sitemap
+
+
+def robots_txt(request):
+    lines = [
+        "User-agent: *",
+        "Allow: /",
+        f"Sitemap: {request.scheme}://{request.get_host()}/sitemap.xml",
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain")
 """
 URL configuration for blog_project project.
 
@@ -21,13 +32,32 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from .sitemaps import CategorySitemap, EmissionSitemap, PostSitemap
+
+sitemaps = {
+    "posts": PostSitemap,
+    "categories": CategorySitemap,
+    "emissions": EmissionSitemap,
+}
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+    path(
+        'sitemap.xml',
+        sitemap,
+        {'sitemaps': sitemaps},
+        name='sitemap',
+    ),
+    path('robots.txt', robots_txt, name='robots_txt'),
     path('', include('core.urls')),
     path('accounts/', include('accounts.urls')),
     path('comments/', include('comments.urls')),
     path('reactions/', include('reactions.urls')),
     path('blog/', include('blog.urls')),
+    path('emissions/', include('emissions.urls')),
+    path('dashboard/', include('dashboard.urls')),
+    path('newsletter/', include('newsletter.urls')),
 ]
 
 if settings.DEBUG:

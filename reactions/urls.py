@@ -4,15 +4,15 @@ from . import views
 urlpatterns = [
 
     path(
-        "post/<slug:slug>/",
-        views.like_post,
-        name="like_post"
+        "comment-like/<int:id>/",
+        views.comment_like,
+        name="comment_like",
     ),
 
     path(
-    "comment-like/<int:id>/",
-    views.comment_like,
-    name="comment_like",
-)
+        "comment-report/<int:id>/",
+        views.report_comment,
+        name="comment_report",
+    ),
 
 ]

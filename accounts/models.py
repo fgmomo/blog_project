@@ -1,5 +1,8 @@
 from django.db import models
 
+from core.validators import validate_image_extension, validate_image_size
+
+
 class Role(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.CharField(max_length=255, blank=True)
@@ -30,7 +33,8 @@ class Profile(models.Model):
     profile_picture = models.ImageField(
         upload_to="profiles/",
         blank=True,
-        null=True
+        null=True,
+        validators=[validate_image_extension, validate_image_size]
     )
 
     created_at = models.DateTimeField(

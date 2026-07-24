@@ -11,6 +11,16 @@
     />
     <title>{% block title %} OM News {% endblock %}</title>
 
+    {% block meta %}
+    <meta name="description" content="OM News — toute l'actualité nationale et internationale, en temps réel." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="OM News" />
+    <meta property="og:title" content="OM News" />
+    <meta property="og:description" content="Toute l'actualité nationale et internationale, en temps réel." />
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'images/logo.jpg' %}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    {% endblock %}
+
     <!-- Bootstrap -->
 
     <link
@@ -32,7 +42,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
 
@@ -41,7 +51,20 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   </head>
   <body>
-    {% include 'includes/navbar.html' %} {% block content %} {% endblock %}
+    {% include 'includes/navbar.html' %}
+
+    {% if messages %}
+    <div class="container mt-3">
+      {% for message in messages %}
+      <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %} {% endblock %}
     {%include 'includes/footer.html' %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
@@ -114,6 +137,34 @@
       });
     </script>
     <script>
+      document.querySelectorAll(".report-btn").forEach((btn) => {
+        btn.onclick = function (e) {
+          e.preventDefault();
+
+          if (this.disabled) return;
+
+          fetch("/reactions/comment-report/" + this.dataset.id + "/")
+            .then((r) => r.json())
+            .then((data) => {
+              if (data.error) {
+                window.location.href = "/accounts/login/";
+                return;
+              }
+
+              this.disabled = true;
+              this.innerHTML = '<i class="bi bi-flag-fill"></i> Signalé';
+
+              if (data.hidden) {
+                const card = this.closest(".comment-card, .reply-card");
+                if (card) {
+                  card.style.opacity = "0.4";
+                }
+              }
+            });
+        };
+      });
+    </script>
+    <script>
 document.querySelectorAll(".reply-btn").forEach(button => {
 
     button.addEventListener("click", function(){
@@ -128,5 +179,81 @@ document.querySelectorAll(".reply-btn").forEach(button => {
 
 });
 </script>
+    <script>
+      document.querySelectorAll(".edit-btn").forEach((button) => {
+        button.addEventListener("click", function () {
+          const card = this.closest(".comment-card, .reply-card");
+
+          const form = card.querySelector(".edit-form");
+          const body = card.querySelector(".edit-target");
+
+          form.classList.toggle("d-none");
+          body.classList.toggle("d-none");
+        });
+      });
+
+      document.querySelectorAll(".copy-link-btn").forEach((button) => {
+        button.addEventListener("click", function () {
+          navigator.clipboard.writeText(this.dataset.url).then(() => {
+            const original = this.innerHTML;
+
+            this.innerHTML = '<i class="bi bi-check-lg"></i>';
+            this.classList.add("copied");
+
+            setTimeout(() => {
+              this.innerHTML = original;
+              this.classList.remove("copied");
+            }, 2000);
+          });
+        });
+      });
+    </script>
+    <script>
+      const revealElements = document.querySelectorAll(".reveal");
+
+      if ("IntersectionObserver" in window && revealElements.length) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+        );
+
+        revealElements.forEach((el) => observer.observe(el));
+      } else {
+        revealElements.forEach((el) => el.classList.add("is-visible"));
+      }
+    </script>
+    <script>
+      const heroParallax = document.getElementById("hero-parallax");
+      const heroSection = document.getElementById("hero");
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+
+      if (heroParallax && heroSection && !prefersReducedMotion) {
+        let ticking = false;
+
+        function updateParallax() {
+          const rect = heroSection.getBoundingClientRect();
+          const offset = rect.top * -0.25;
+
+          heroParallax.style.transform = `translateY(${offset}px)`;
+          ticking = false;
+        }
+
+        window.addEventListener("scroll", () => {
+          if (!ticking) {
+            requestAnimationFrame(updateParallax);
+            ticking = true;
+          }
+        });
+      }
+    </script>
   </body>
 </html>

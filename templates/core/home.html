@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load emissions_extras %}
+{% load blog_extras %}
 
 {% block title %}
 Accueil
@@ -7,9 +9,11 @@ Accueil
 
 {% block content %}
 
-<section class="hero">
+<section class="hero" id="hero">
 
-    <img src="{% static 'images/hero.jpg' %}" class="hero-image">
+    <div class="hero-image-wrap" id="hero-parallax">
+        <img src="{% static 'images/hero.jpg' %}" class="hero-image">
+    </div>
 
     <div class="hero-overlay">
 
@@ -33,11 +37,37 @@ Accueil
 
 </section>
 
+<!-- Catégories -->
+<section class="py-4">
+    <div class="container">
+        <div class="category-strip reveal">
+            {% for category in categories %}
+            <a href="{% url 'blog.category_detail' category.slug %}" class="category-pill">
+                <i class="bi bi-tag"></i> {{ category.name }}
+            </a>
+            {% endfor %}
+            <a href="{% url 'blog.categories' %}" class="category-pill category-pill-all">
+                Toutes les catégories <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+{% active_ads "home" as ads %}
+{% if ads %}
+<section class="py-2">
+    <div class="container">
+        {% include 'includes/ad_carousel.html' with ads=ads carousel_id='adCarouselHome' extra_class='ad-card-banner' %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Actualités -->
 <section class="py-5">
 
     <div class="container">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 reveal">
 
             <h2>Dernières actualités</h2>
 
@@ -47,11 +77,13 @@ Accueil
 
         </div>
 
-        <div class="row">
+        <div class="row article-grid">
 
             {% for post in latest_posts %}
 
+                {% with card_class="col-lg-4 col-md-6 reveal" %}
                 {% include 'includes/article_card.html' %}
+                {% endwith %}
 
             {% empty %}
 
@@ -67,6 +99,84 @@ Accueil
 
     </div>
 
+</section>
+
+<!-- Émissions -->
+{% if emissions %}
+<section class="py-5 section-alt">
+
+    <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center mb-4 reveal">
+
+            <h2>Nos émissions</h2>
+
+            <a href="{% url 'emissions.index' %}" class="btn btn-outline-primary">
+                Voir tout
+            </a>
+
+        </div>
+
+        <div class="row">
+
+            {% for emission in emissions %}
+            <div class="col-lg-4 col-md-6 mb-4 reveal">
+                <a href="{% url 'emissions.detail' emission.slug %}" class="news-link">
+                    <div class="emission-card">
+                        <div class="emission-media">
+                            {% if emission.cover_image %}
+                            <img src="{{ emission.cover_image.url }}" alt="{{ emission.title }}" />
+                            {% elif emission.video_url|youtube_thumbnail_url %}
+                            <img src="{{ emission.video_url|youtube_thumbnail_url }}" alt="{{ emission.title }}" />
+                            {% else %}
+                            <img src="https://picsum.photos/seed/{{ emission.slug }}/800/600" alt="{{ emission.title }}" />
+                            {% endif %}
+
+                            <div class="emission-media-overlay"></div>
+
+                            {% if emission.video_url %}
+                            <span class="emission-play"><i class="bi bi-play-fill"></i></span>
+                            <span class="emission-replay-tag">Replay disponible</span>
+                            {% endif %}
+
+                            <div class="emission-media-caption">
+                                <h3 class="emission-title">{{ emission.title }}</h3>
+                                {% if emission.host %}
+                                <span class="emission-host"><i class="bi bi-mic"></i> {{ emission.host }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="news-content">
+                            <p class="news-summary">{{ emission.description|truncatewords:20 }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+{% endif %}
+
+<!-- Services CTA -->
+<section class="py-5">
+    <div class="container">
+        <div class="services-cta reveal">
+            <div>
+                <div class="eyebrow">OM News</div>
+                <h2 class="mb-2">Un accompagnement sur mesure</h2>
+                <p class="mb-0">Couverture d'événements, publicité, production de contenu : découvrez tout ce que nous pouvons faire pour vous.</p>
+            </div>
+
+            <a href="{% url 'core.services' %}" class="btn btn-light btn-lg flex-shrink-0">
+                Découvrir nos services <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
 </section>
 
 {% endblock %}

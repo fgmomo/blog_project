@@ -1,0 +1,12 @@
+<div class="footer-newsletter">
+  <div>
+    <h5>Restez informé</h5>
+    <p>Recevez les actualités importantes directement dans votre boîte mail.</p>
+  </div>
+
+  <form method="POST" action="{% url 'newsletter:subscribe' %}" class="footer-newsletter-form">
+    {% csrf_token %}
+    <input type="email" name="email" required placeholder="Votre adresse email">
+    <button type="submit" class="btn btn-primary">S'abonner</button>
+  </form>
+</div>

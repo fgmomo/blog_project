@@ -1,5 +1,4 @@
 {% load static %}
-{% load static %}
 
 <footer class="footer">
 
@@ -43,7 +42,7 @@
 
             <!-- Navigation -->
 
-            <div class="col-lg-2">
+            <div class="col-md-6 col-lg-2">
 
                 <h5>Navigation</h5>
 
@@ -67,8 +66,24 @@
 
                     <li>
 
-                        <a href="#">
+                        <a href="{% url 'blog.categories' %}">
                             Catégories
+                        </a>
+
+                    </li>
+
+                    <li>
+
+                        <a href="{% url 'emissions.index' %}">
+                            Émissions
+                        </a>
+
+                    </li>
+
+                    <li>
+
+                        <a href="{% url 'core.about' %}">
+                            À propos
                         </a>
 
                     </li>
@@ -79,19 +94,23 @@
 
             <!-- Services -->
 
-            <div class="col-lg-3">
+            <div class="col-md-6 col-lg-3">
 
                 <h5>Services</h5>
 
                 <ul class="footer-links">
 
-                    <li>Articles</li>
+                    <li><a href="{% url 'blog.index' %}">Articles</a></li>
 
-                    <li>Commentaires</li>
+                    <li><a href="{% url 'emissions.index' %}">Émissions</a></li>
 
-                    <li>Recherche</li>
+                    <li><a href="{% url 'core.services' %}">Nos services</a></li>
 
-                    <li>Compte utilisateur</li>
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'blog.author_detail' user.username %}">Mon compte</a></li>
+                    {% else %}
+                    <li><a href="{% url 'login' %}">Compte utilisateur</a></li>
+                    {% endif %}
 
                 </ul>
 
@@ -99,7 +118,7 @@
 
             <!-- Contact -->
 
-            <div class="col-lg-3">
+            <div class="col-md-6 col-lg-3">
 
                 <h5>Contact</h5>
 
@@ -137,11 +156,23 @@
 
         <hr>
 
+        {% include 'includes/newsletter_form.html' %}
+
+        <hr>
+
         <div class="footer-bottom">
 
             <span>
 
                 © 2026 OM News — Tous droits réservés.
+
+            </span>
+
+            <span class="footer-legal-links">
+
+                <a href="{% url 'core.legal_notice' %}">Mentions légales</a>
+                <a href="{% url 'core.privacy_policy' %}">Confidentialité</a>
+                <a href="{% url 'core.terms' %}">CGU</a>
 
             </span>
 

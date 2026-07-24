@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %} Trop de requêtes {% endblock %}
+{% block content %}
+
+<div class="container py-5 text-center">
+  <div class="py-5">
+    <div class="eyebrow">Erreur 403</div>
+    <h1 class="fw-bold mb-3">Trop de requêtes</h1>
+    <p class="text-muted mb-4">
+      Vous avez effectué trop d'actions en peu de temps. Réessayez dans quelques instants.
+    </p>
+
+    <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
+      <i class="bi bi-house"></i> Retour à l'accueil
+    </a>
+  </div>
+</div>
+
+{% endblock %}

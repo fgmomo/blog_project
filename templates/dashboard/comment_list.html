@@ -1,0 +1,68 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %} Commentaires {% endblock %}
+{% block dashboard_content %}
+
+<div class="page-header reveal">
+  <div class="eyebrow">Administration</div>
+  <h1>Modération des commentaires</h1>
+</div>
+
+<div class="dashboard-filter-card reveal">
+  <div class="dashboard-filter-card-title"><i class="bi bi-funnel"></i> Filtrer par statut</div>
+
+  <div class="dashboard-filters">
+    <a href="{% url 'dashboard:comment_list' %}" class="dashboard-filter-pill {% if not status %}active{% endif %}">Tous</a>
+    <a href="{% url 'dashboard:comment_list' %}?status=pending" class="dashboard-filter-pill {% if status == 'pending' %}active{% endif %}">En attente</a>
+    <a href="{% url 'dashboard:comment_list' %}?status=reported" class="dashboard-filter-pill {% if status == 'reported' %}active{% endif %}">Signalés</a>
+  </div>
+</div>
+
+<div class="dashboard-table-wrap reveal">
+  <table class="table dashboard-table">
+    <thead>
+      <tr>
+        <th>Article</th>
+        <th>Auteur</th>
+        <th>Contenu</th>
+        <th>Signalements</th>
+        <th>Statut</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for comment in comments %}
+      <tr>
+        <td><a href="{% url 'blog.detail' comment.post.slug %}" target="_blank">{{ comment.post.title|truncatechars:30 }}</a></td>
+        <td>{{ comment.user.username }}</td>
+        <td>{{ comment.content|truncatechars:70 }}</td>
+        <td>{{ comment.reports_count }}</td>
+        <td>
+          {% if comment.is_approved %}
+          <span class="badge bg-success">Visible</span>
+          {% else %}
+          <span class="badge bg-warning text-dark">Masqué</span>
+          {% endif %}
+        </td>
+        <td class="text-end">
+          {% if not comment.is_approved %}
+          <a href="{% url 'dashboard:comment_approve' comment.pk %}" class="btn btn-sm btn-outline-success">
+            <i class="bi bi-check-lg"></i> Approuver
+          </a>
+          {% endif %}
+          <a href="{% url 'dashboard:comment_delete' comment.pk %}" class="btn btn-sm btn-outline-danger">
+            <i class="bi bi-trash"></i>
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="text-center text-muted py-4">Aucun commentaire.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% include 'includes/pagination.html' with page_obj=comments %}
+
+{% endblock %}

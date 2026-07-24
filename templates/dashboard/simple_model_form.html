@@ -1,0 +1,31 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %} {{ section_title }} {% endblock %}
+{% block dashboard_content %}
+
+<div class="page-header reveal">
+  <div class="eyebrow">Contenu</div>
+  <h1>{% if object %}Modifier{% else %}Ajouter{% endif %} — {{ section_title }}</h1>
+</div>
+
+<div class="dashboard-form-card reveal">
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% for field in form %}
+    <div class="mb-3">
+      <label class="form-label">{{ field.label }}</label>
+      {{ field }}
+      {% if field.errors %}
+      <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary">Enregistrer</button>
+      <a href="{% url back_url_name %}" class="btn btn-outline-secondary">Annuler</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load emissions_extras %}
+{% block title %} {{ emission.title }} — OM News {% endblock %}
+
+{% block meta %}
+<meta name="description" content="{{ emission.description|striptags|truncatewords:30 }}" />
+<meta property="og:type" content="video.other" />
+<meta property="og:site_name" content="OM News" />
+<meta property="og:title" content="{{ emission.title }}" />
+<meta property="og:description" content="{{ emission.description|striptags|truncatewords:30 }}" />
+{% if emission.cover_image %}
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ emission.cover_image.url }}" />
+{% elif emission.video_url|youtube_thumbnail_url %}
+<meta property="og:image" content="{{ emission.video_url|youtube_thumbnail_url }}" />
+{% endif %}
+<meta name="twitter:card" content="summary_large_image" />
+{% endblock %}
+
+{% block content %}
+
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-xl-9">
+      <article class="article-card">
+        <div class="article-cover">
+          {% if emission.cover_image %}
+          <img src="{{ emission.cover_image.url }}" />
+          {% elif emission.video_url|youtube_thumbnail_url %}
+          <img src="{{ emission.video_url|youtube_thumbnail_url }}" />
+          {% endif %}
+        </div>
+
+        <div class="article-body">
+          {% if emission.host %}
+          <div class="article-meta">
+            <div><i class="bi bi-mic"></i> Animé par <strong>{{ emission.host }}</strong></div>
+          </div>
+          {% endif %}
+
+          <h1 class="article-title">{{ emission.title }}</h1>
+
+          <div class="article-content">{{ emission.description|linebreaks }}</div>
+
+          {% if emission.video_url %}
+            {% with embed_url=emission.video_url|youtube_embed_url %}
+            {% if embed_url %}
+            <div class="video-wrapper">
+              <iframe
+                src="{{ embed_url }}"
+                title="{{ emission.title }}"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+                loading="lazy"
+              ></iframe>
+            </div>
+
+            <a href="{{ emission.video_url }}" class="small d-inline-block mt-2" target="_blank" rel="noopener">
+              La vidéo ne s'affiche pas ? Regarder sur YouTube
+              <i class="bi bi-box-arrow-up-right"></i>
+            </a>
+            {% else %}
+            <a href="{{ emission.video_url }}" class="btn btn-primary" target="_blank" rel="noopener">
+              <i class="bi bi-play-circle"></i> Regarder le replay
+            </a>
+            {% endif %}
+            {% endwith %}
+          {% endif %}
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

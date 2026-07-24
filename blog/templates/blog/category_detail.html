@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %} {{ category.name }} {% endblock %}
+{% block content %}
+
+<div class="container py-5">
+  <div class="page-header">
+    <div class="eyebrow">Catégorie</div>
+    <div class="d-flex justify-content-between align-items-end flex-wrap gap-2">
+      <h1 class="mb-0">{{ category.name }}</h1>
+
+      <span class="badge rounded-pill badge-brand">
+        {{ paginator.count }} article{{ paginator.count|pluralize }}
+      </span>
+    </div>
+
+    {% if category.description %}
+    <p class="mt-2">{{ category.description }}</p>
+    {% endif %}
+  </div>
+
+  <div class="row article-grid">
+    {% for post in posts %} {% with card_class="col-lg-4 col-md-6" %}
+    {% include 'includes/article_card.html' %} {% endwith %} {% empty %}
+    <div class="col-12">
+      <div class="alert alert-warning">Aucun article publié dans cette catégorie.</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% include 'includes/pagination.html' with page_obj=posts %}
+</div>
+
+{% endblock %}

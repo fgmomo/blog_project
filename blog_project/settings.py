@@ -12,20 +12,45 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
+import dj_database_url
+from dotenv import load_dotenv
+import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%afpp_t-oc17j=&l5r08cqy84ahw4*_lg+s0xw8k%+9pex__ld'
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-%afpp_t-oc17j=&l5r08cqy84ahw4*_lg+s0xw8k%+9pex__ld',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',')
+    if host.strip()
+]
+
+# Sécurité renforcée en production (aucun effet tant que DEBUG=True en local)
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_REFERRER_POLICY = 'same-origin'
 
 
 # Application definition
@@ -37,12 +62,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
+    'ckeditor',
+    'ckeditor_uploader',
     'blog',
     'accounts',
     'comments',
     'core',
     'reactions',
-    
+    'emissions',
+    'dashboard',
+    'newsletter',
+
 ]
 
 MIDDLEWARE = [
@@ -68,6 +99,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'dashboard.context_processors.sidebar_counts',
             ],
         },
     },
@@ -78,12 +110,44 @@ WSGI_APPLICATION = 'blog_project.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+# Bascule automatiquement vers PostgreSQL (ou autre) si DATABASE_URL est
+# défini dans .env ; reste sur SQLite en local sinon.
 
 DATABASES = {
+    'default': dj_database_url.parse(
+        os.environ.get('DATABASE_URL') or f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+    )
+}
+
+
+# Email
+# https://docs.djangoproject.com/en/5.0/topics/email/
+# Backend console par défaut : les emails s'affichent dans le terminal du
+# serveur au lieu d'être envoyés. Fournir les variables DJANGO_EMAIL_* dans
+# .env pour brancher un vrai service SMTP.
+
+EMAIL_BACKEND = os.environ.get(
+    'DJANGO_EMAIL_BACKEND',
+    'django.core.mail.backends.console.EmailBackend',
+)
+EMAIL_HOST = os.environ.get('DJANGO_EMAIL_HOST', '')
+EMAIL_PORT = int(os.environ.get('DJANGO_EMAIL_PORT', '587'))
+EMAIL_HOST_USER = os.environ.get('DJANGO_EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('DJANGO_EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = os.environ.get('DJANGO_EMAIL_USE_TLS', 'True') == 'True'
+DEFAULT_FROM_EMAIL = os.environ.get('DJANGO_DEFAULT_FROM_EMAIL', 'noreply@omnews.ml')
+
+
+# CKEditor (éditeur riche pour le contenu des articles)
+
+CKEDITOR_UPLOAD_PATH = "ckeditor_uploads/"
+CKEDITOR_IMAGE_BACKEND = "pillow"
+CKEDITOR_CONFIGS = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'toolbar': 'full',
+        'height': 400,
+    },
 }
 
 

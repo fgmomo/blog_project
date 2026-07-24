@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %} Erreur serveur {% endblock %}
+{% block content %}
+
+<div class="container py-5 text-center">
+  <div class="py-5">
+    <div class="eyebrow">Erreur 500</div>
+    <h1 class="fw-bold mb-3">Un problème est survenu</h1>
+    <p class="text-muted mb-4">
+      Quelque chose s'est mal passé de notre côté. Réessayez dans quelques instants.
+    </p>
+
+    <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
+      <i class="bi bi-house"></i> Retour à l'accueil
+    </a>
+  </div>
+</div>
+
+{% endblock %}

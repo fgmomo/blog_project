@@ -6,91 +6,124 @@
   <div class="row">
     <!-- Articles -->
     <div class="col-lg-9">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">Toutes les actualités</h2>
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <h2 class="fw-bold mb-0">Toutes les actualités</h2>
 
-        <span class="badge bg-dark">
-          {{ posts.count }} article{{ posts.count|pluralize }}
-        </span>
+        <div class="d-flex align-items-center gap-3">
+          <span class="badge bg-dark">
+            {{ paginator.count }} article{{ paginator.count|pluralize }}
+          </span>
+
+          <form method="GET" class="per-page-select">
+            {% if search %}<input type="hidden" name="search" value="{{ search }}">{% endif %}
+            <label for="per-page">Afficher</label>
+            <select name="per_page" id="per-page" class="form-select form-select-sm" onchange="this.form.submit()">
+              {% for choice in per_page_choices %}
+              <option value="{{ choice }}" {% if choice == per_page %}selected{% endif %}>{{ choice }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </div>
       </div>
-      <div class="row">
-        {% for post in posts %} {% with card_class="col-lg-6 col-md-6" %}
+      <div class="row article-grid">
+        {% for post in posts %} {% with card_class="col-lg-4 col-md-6" %}
         {%include 'includes/article_card.html' %} {% endwith %} {% empty %}
         <div class="col-12">
           <div class="alert alert-warning">Aucun article publié.</div>
         </div>
         {% endfor %}
       </div>
+
+      {% include 'includes/pagination.html' with page_obj=posts %}
     </div>
     <!-- Sidebar -->
     <div class="col-lg-3">
-      <div class="card sidebar-card p-4 sticky-top">
-        <h5 class="fw-bold">Recherche</h5>
+      <div class="card sidebar-card sticky-top">
+        <div class="sidebar-search-block">
+          <h5 class="fw-bold">Recherche</h5>
 
-        <form method="GET">
-          <input
-            type="text"
-            name="search"
-            value="{{ search|default:'' }}"
-            class="form-control"
-            placeholder="Rechercher..."
-          />
-        </form>
-        <hr />
-
-        <h5 class="fw-bold mb-3">Articles populaires</h5>
-
-        {% for article in popular_posts %}
-
-        <a href="{% url 'blog.detail' article.slug %}" class="sidebar-post">
-          <div>
-            <div class="sidebar-title">{{ article.title }}</div>
-
-            <small>
-              <i class="bi bi-eye"></i>
-
-              {{ article.views }} vues
-            </small>
-          </div>
-        </a>
-
-        {% endfor %}
-
-        <!-- <hr /> -->
-
-        <!-- <h5 class="fw-bold mb-3">Articles récents</h5>
-
-        {% for article in recent_posts %}
-
-        <a href="{% url 'blog.detail' article.slug %}" class="sidebar-post">
-          <div>
-            <div class="sidebar-title">{{ article.title }}</div>
-
-            <small> {{ article.created_at|time_since }} </small>
-          </div>
-        </a>
-
-        {% endfor %}
-
-        <hr /> -->
-
-        <!-- <h5 class="fw-bold">Catégories</h5>
-
-        {% for category in categories %}
-
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <span>{{ category.name }}</span>
-
-          <span class="badge rounded-pill bg-light text-dark">
-            {{ category.posts.count }}
-          </span>
+          <form method="GET">
+            <input
+              type="text"
+              name="search"
+              value="{{ search|default:'' }}"
+              class="form-control"
+              placeholder="Rechercher..."
+            />
+          </form>
         </div>
 
-        {% empty %}
+        <div class="sidebar-scroll">
+          <div class="sidebar-block">
+            <h5 class="fw-bold mb-3">Articles populaires</h5>
 
-        <p>Aucune catégorie.</p>
+            {% for article in popular_posts %}
 
-        {% endfor %} -->
+            <a href="{% url 'blog.detail' article.slug %}" class="sidebar-post">
+              <div>
+                <div class="sidebar-title">{{ article.title }}</div>
+
+                <small>
+                  <i class="bi bi-eye"></i>
+
+                  {{ article.views }} vues
+                </small>
+              </div>
+            </a>
+
+            {% endfor %}
+          </div>
+
+          <div class="sidebar-block">
+            <h5 class="fw-bold mb-3">Articles récents</h5>
+
+            {% for article in recent_posts %}
+
+            <a href="{% url 'blog.detail' article.slug %}" class="sidebar-post">
+              <div>
+                <div class="sidebar-title">{{ article.title }}</div>
+
+                <small> {{ article.created_at|time_since }} </small>
+              </div>
+            </a>
+
+            {% endfor %}
+          </div>
+
+          <div class="sidebar-block">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="fw-bold mb-0">Catégories</h5>
+
+              <a href="{% url 'blog.categories' %}" class="small">Tout voir</a>
+            </div>
+
+            {% for category in categories %}
+
+            <a
+              href="{% url 'blog.category_detail' category.slug %}"
+              class="text-decoration-none text-dark"
+            >
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span>{{ category.name }}</span>
+
+                <span class="badge rounded-pill bg-light text-dark">
+                  {{ category.posts.count }}
+                </span>
+              </div>
+            </a>
+
+            {% empty %}
+
+            <p>Aucune catégorie.</p>
+
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      {% active_ads "sidebar" as ads %}
+      <div class="mt-4">
+        {% include 'includes/ad_carousel.html' with ads=ads carousel_id='adCarouselSidebar' extra_class='p-3' %}
       </div>
     </div>
   </div>

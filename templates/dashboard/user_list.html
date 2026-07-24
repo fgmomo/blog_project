@@ -1,0 +1,79 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %} Utilisateurs {% endblock %}
+{% block dashboard_content %}
+
+<div class="page-header reveal">
+  <div class="eyebrow">Administration</div>
+  <h1>Utilisateurs</h1>
+</div>
+
+<div class="dashboard-filter-card reveal">
+  <div class="dashboard-filter-card-title"><i class="bi bi-funnel"></i> Rechercher un utilisateur</div>
+
+  <form method="GET" class="dashboard-search">
+    <i class="bi bi-search"></i>
+    <input type="text" name="search" value="{{ request.GET.search|default:'' }}" placeholder="Rechercher un pseudo...">
+    {% if request.GET.search %}
+    <a href="?" class="dashboard-search-clear"><i class="bi bi-x-lg"></i></a>
+    {% endif %}
+  </form>
+</div>
+
+<div class="dashboard-table-wrap reveal">
+  <table class="table dashboard-table">
+    <thead>
+      <tr>
+        <th>Utilisateur</th>
+        <th>Email</th>
+        <th>Inscrit le</th>
+        <th>Statut</th>
+        <th>Rôle</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>
+          <a href="{% url 'blog.author_detail' u.username %}" target="_blank">{{ u.username }}</a>
+        </td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.date_joined|date:"d/m/Y" }}</td>
+        <td>
+          {% if u.is_active %}
+          <span class="badge bg-success">Actif</span>
+          {% else %}
+          <span class="badge bg-secondary">Désactivé</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if u.is_superuser %}
+          <span class="badge bg-dark">Super admin</span>
+          {% elif u.is_staff %}
+          <span class="badge bg-dark">Staff</span>
+          {% else %}
+          <span class="text-muted">Membre</span>
+          {% endif %}
+        </td>
+        <td class="text-end">
+          {% if u != request.user %}
+          <a href="{% url 'dashboard:user_toggle_active' u.pk %}" class="btn btn-sm {% if u.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %}">
+            {% if u.is_active %}Désactiver{% else %}Activer{% endif %}
+          </a>
+          {% else %}
+          <span class="text-muted small">Vous</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="text-center text-muted py-4">Aucun utilisateur.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% include 'includes/pagination.html' with page_obj=users %}
+
+{% endblock %}

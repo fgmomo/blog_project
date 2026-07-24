@@ -1,0 +1,177 @@
+{% extends 'dashboard/app_base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="dashboard-topbar">
+  <div class="dashboard-topbar-left">
+    <a href="{% url 'home' %}" class="dashboard-logo">
+      <img src="{% static 'images/logo.jpg' %}" alt="OM News">
+    </a>
+
+    <button type="button" id="sidebar-toggle" class="dashboard-collapse-btn" title="Réduire le menu">
+      <i class="bi bi-chevron-double-left"></i>
+    </button>
+  </div>
+
+  <div class="dashboard-topbar-right">
+    <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-box-arrow-left"></i> Retour au site
+    </a>
+
+    <div class="dashboard-topbar-user">
+      <div class="text-end">
+        <strong>{{ user.username }}</strong>
+        <div class="text-muted small">{% if user.is_staff %}Master Admin{% else %}Membre{% endif %}</div>
+      </div>
+      <div class="dashboard-topbar-avatar">
+        <div class="avatar">{{ user.username|first|upper }}</div>
+        <span class="dashboard-status-dot"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="dashboard-shell">
+
+      <aside class="dashboard-sidebar">
+        <div class="dashboard-sidebar-inner">
+
+          <nav class="dashboard-nav">
+            <a href="{% url 'dashboard:home' %}" class="dashboard-nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+              <span class="dashboard-nav-icon"><i class="bi bi-speedometer2"></i></span>
+              <span class="dashboard-nav-label">Tableau de bord</span>
+            </a>
+
+            {% if user.is_staff %}
+            <div class="dashboard-nav-section">Contenu</div>
+
+            <a href="{% url 'dashboard:post_list' %}" class="dashboard-nav-link {% if '/articles/' in request.path %}active{% endif %}">
+              <span class="dashboard-nav-icon"><i class="bi bi-newspaper"></i></span>
+              <span class="dashboard-nav-label">Articles</span>
+              {% if sidebar_posts_count %}<span class="dashboard-nav-badge">{{ sidebar_posts_count }}</span>{% endif %}
+            </a>
+
+            <div class="dashboard-nav-group">
+              <button
+                type="button"
+                class="dashboard-nav-link dashboard-nav-toggle {% if '/commentaires/' in request.path %}active{% endif %}"
+                data-bs-toggle="collapse"
+                data-bs-target="#nav-comments-submenu"
+                aria-expanded="{% if '/commentaires/' in request.path %}true{% else %}false{% endif %}"
+              >
+                <span class="dashboard-nav-icon"><i class="bi bi-chat-dots"></i></span>
+                <span class="dashboard-nav-label">Commentaires</span>
+                {% if sidebar_pending_comments_count %}<span class="dashboard-nav-badge dashboard-nav-badge-alert">{{ sidebar_pending_comments_count }}</span>{% endif %}
+                <i class="bi bi-chevron-right dashboard-nav-chevron"></i>
+              </button>
+
+              <div class="dashboard-nav-subitems collapse {% if '/commentaires/' in request.path %}show{% endif %}" id="nav-comments-submenu">
+                <a href="{% url 'dashboard:comment_list' %}" class="dashboard-nav-sublink">
+                  <span class="dashboard-nav-label">Tous</span>
+                </a>
+                <a href="{% url 'dashboard:comment_list' %}?status=pending" class="dashboard-nav-sublink">
+                  <span class="dashboard-nav-label">En attente</span>
+                  <span class="dashboard-nav-badge">{{ sidebar_pending_comments_count }}</span>
+                </a>
+                <a href="{% url 'dashboard:comment_list' %}?status=reported" class="dashboard-nav-sublink">
+                  <span class="dashboard-nav-label">Signalés</span>
+                  <span class="dashboard-nav-badge">{{ sidebar_reported_comments_count }}</span>
+                </a>
+              </div>
+            </div>
+
+            <a href="{% url 'dashboard:category_list' %}" class="dashboard-nav-link {% if '/categories/' in request.path %}active{% endif %}">
+              <span class="dashboard-nav-icon"><i class="bi bi-tag"></i></span>
+              <span class="dashboard-nav-label">Catégories</span>
+              <span class="dashboard-nav-badge">{{ sidebar_categories_count }}</span>
+            </a>
+            <a href="{% url 'dashboard:emission_list' %}" class="dashboard-nav-link {% if '/emissions/' in request.path %}active{% endif %}">
+              <span class="dashboard-nav-icon"><i class="bi bi-collection-play"></i></span>
+              <span class="dashboard-nav-label">Émissions</span>
+              <span class="dashboard-nav-badge">{{ sidebar_emissions_count }}</span>
+            </a>
+            <a href="{% url 'dashboard:team_list' %}" class="dashboard-nav-link {% if '/equipe/' in request.path %}active{% endif %}">
+              <span class="dashboard-nav-icon"><i class="bi bi-people"></i></span>
+              <span class="dashboard-nav-label">Équipe</span>
+              <span class="dashboard-nav-badge">{{ sidebar_team_count }}</span>
+            </a>
+            <a href="{% url 'dashboard:partner_list' %}" class="dashboard-nav-link {% if '/partenaires/' in request.path %}active{% endif %}">
+              <span class="dashboard-nav-icon"><i class="bi bi-handshake"></i></span>
+              <span class="dashboard-nav-label">Partenaires</span>
+              <span class="dashboard-nav-badge">{{ sidebar_partners_count }}</span>
+            </a>
+
+            <div class="dashboard-nav-section">Monétisation</div>
+
+            <a href="{% url 'dashboard:ad_list' %}" class="dashboard-nav-link {% if '/publicites/' in request.path %}active{% endif %}">
+              <span class="dashboard-nav-icon"><i class="bi bi-megaphone"></i></span>
+              <span class="dashboard-nav-label">Publicités</span>
+              <span class="dashboard-nav-badge">{{ sidebar_ads_count }}</span>
+            </a>
+
+            <div class="dashboard-nav-group">
+              <button
+                type="button"
+                class="dashboard-nav-link dashboard-nav-toggle {% if '/newsletter/' in request.path %}active{% endif %}"
+                data-bs-toggle="collapse"
+                data-bs-target="#nav-newsletter-submenu"
+                aria-expanded="{% if '/newsletter/' in request.path %}true{% else %}false{% endif %}"
+              >
+                <span class="dashboard-nav-icon"><i class="bi bi-envelope-paper"></i></span>
+                <span class="dashboard-nav-label">Newsletter</span>
+                <span class="dashboard-nav-badge">{{ sidebar_subscribers_count }}</span>
+                <i class="bi bi-chevron-right dashboard-nav-chevron"></i>
+              </button>
+
+              <div class="dashboard-nav-subitems collapse {% if '/newsletter/' in request.path %}show{% endif %}" id="nav-newsletter-submenu">
+                <a href="{% url 'dashboard:subscriber_list' %}" class="dashboard-nav-sublink">
+                  <span class="dashboard-nav-label">Abonnés</span>
+                  <span class="dashboard-nav-badge">{{ sidebar_subscribers_count }}</span>
+                </a>
+                <a href="{% url 'dashboard:campaign_list' %}" class="dashboard-nav-sublink">
+                  <span class="dashboard-nav-label">Campagnes</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="dashboard-nav-section">Administration</div>
+
+            <a href="{% url 'dashboard:user_list' %}" class="dashboard-nav-link {% if '/utilisateurs/' in request.path %}active{% endif %}">
+              <span class="dashboard-nav-icon"><i class="bi bi-person-gear"></i></span>
+              <span class="dashboard-nav-label">Utilisateurs</span>
+              <span class="dashboard-nav-badge">{{ sidebar_users_count }}</span>
+            </a>
+            {% endif %}
+
+            <div class="dashboard-nav-section">Compte</div>
+
+            <a href="{% url 'dashboard:profile' %}" class="dashboard-nav-link {% if '/profil/' in request.path %}active{% endif %}">
+              <span class="dashboard-nav-icon"><i class="bi bi-gear"></i></span>
+              <span class="dashboard-nav-label">Paramètres du profil</span>
+            </a>
+            <a href="{% url 'logout' %}" class="dashboard-nav-link dashboard-nav-link-danger">
+              <span class="dashboard-nav-icon"><i class="bi bi-box-arrow-right"></i></span>
+              <span class="dashboard-nav-label">Déconnexion</span>
+            </a>
+          </nav>
+
+        </div>
+      </aside>
+
+      <main class="dashboard-content">
+        <div class="container-fluid">
+          {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">
+            {{ message }}
+          </div>
+          {% endfor %}
+          {% endif %}
+
+          {% block dashboard_content %}{% endblock %}
+        </div>
+      </main>
+
+</div>
+
+{% endblock %}

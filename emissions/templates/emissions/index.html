@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load blog_extras %}
+{% load emissions_extras %}
+{% block title %} Émissions {% endblock %}
+{% block content %}
+
+<div class="container py-5">
+  <div class="page-header">
+    <div class="eyebrow">OM News</div>
+    <h1>Nos émissions</h1>
+    <p>Débats, journaux et magazines à revoir en replay, animés par notre rédaction.</p>
+  </div>
+
+  <div class="row">
+    {% for emission in emissions %}
+    <div class="col-lg-4 col-md-6 mb-4 reveal">
+      <a href="{% url 'emissions.detail' emission.slug %}" class="news-link">
+        <div class="emission-card">
+          <div class="emission-media">
+            {% if emission.cover_image %}
+            <img src="{{ emission.cover_image.url }}" alt="{{ emission.title }}" />
+            {% elif emission.video_url|youtube_thumbnail_url %}
+            <img src="{{ emission.video_url|youtube_thumbnail_url }}" alt="{{ emission.title }}" />
+            {% else %}
+            <img src="https://picsum.photos/seed/{{ emission.slug }}/800/600" alt="{{ emission.title }}" />
+            {% endif %}
+
+            <div class="emission-media-overlay"></div>
+
+            {% if emission.video_url %}
+            <span class="emission-play"><i class="bi bi-play-fill"></i></span>
+            <span class="emission-replay-tag">Replay disponible</span>
+            {% endif %}
+
+            <div class="emission-media-caption">
+              <h3 class="emission-title">{{ emission.title }}</h3>
+              {% if emission.host %}
+              <span class="emission-host"><i class="bi bi-mic"></i> {{ emission.host }}</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="news-content">
+            <p class="news-summary">{{ emission.description|truncatewords:24 }}</p>
+          </div>
+        </div>
+      </a>
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <div class="alert alert-warning">Aucune émission pour le moment.</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% include 'includes/pagination.html' with page_obj=emissions %}
+</div>
+
+{% endblock %}

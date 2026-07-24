@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %} {{ author.username }} {% endblock %}
+{% block content %}
+
+<div class="container py-5">
+  <div class="author-banner mb-5">
+    <div class="avatar avatar-lg">{{ author.username|first|upper }}</div>
+
+    <div>
+      <h1 class="mb-1">{{ author.username }}</h1>
+
+      {% if author.profile.role %}
+      <span class="badge rounded-pill badge-brand mb-1">{{ author.profile.role.name }}</span>
+      {% endif %}
+
+      <div class="text-muted small">
+        <i class="bi bi-calendar3"></i> Membre depuis {{ author.date_joined|date:"F Y" }}
+      </div>
+    </div>
+  </div>
+
+  <h5 class="fw-bold mb-3">
+    Articles publiés
+    <span class="badge bg-dark">{{ paginator.count }}</span>
+  </h5>
+
+  <div class="row article-grid">
+    {% for post in posts %} {% with card_class="col-lg-4 col-md-6" %}
+    {% include 'includes/article_card.html' %} {% endwith %} {% empty %}
+    <div class="col-12">
+      <div class="alert alert-warning">Aucun article publié pour le moment.</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% include 'includes/pagination.html' with page_obj=posts %}
+</div>
+
+{% endblock %}

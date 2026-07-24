@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %} Catégories {% endblock %}
+{% block content %}
+
+<div class="container py-5">
+  <div class="page-header">
+    <div class="eyebrow">Explorer</div>
+    <h1>Toutes les catégories</h1>
+    <p>Parcourez l'actualité par thématique.</p>
+  </div>
+
+  <div class="row g-4">
+    {% for category in categories %}
+    <div class="col-lg-4 col-md-6">
+      <a href="{% url 'blog.category_detail' category.slug %}" class="text-decoration-none">
+        <div class="service-card">
+          <div class="service-icon"><i class="bi bi-tag"></i></div>
+          <h4 class="text-dark">{{ category.name }}</h4>
+
+          {% if category.description %}
+          <p class="mb-3">{{ category.description }}</p>
+          {% endif %}
+
+          <span class="badge rounded-pill badge-brand">
+            {{ category.published_count }} article{{ category.published_count|pluralize }}
+          </span>
+        </div>
+      </a>
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <div class="alert alert-warning">Aucune catégorie pour le moment.</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

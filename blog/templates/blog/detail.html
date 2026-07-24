@@ -1,16 +1,45 @@
 {% extends 'base.html' %} {% load blog_extras %} {% block title %}{{ post.title
-}}{% endblock %} {% block content %}
+}} — OM News{% endblock %}
 
-<section class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-xl-9">
+{% block meta %}
+<meta name="description" content="{{ post.content|striptags|truncatewords:30 }}" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="OM News" />
+<meta property="og:title" content="{{ post.title }}" />
+<meta property="og:description" content="{{ post.content|striptags|truncatewords:30 }}" />
+{% if post.image %}
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ post.image.url }}" />
+{% endif %}
+<meta property="article:author" content="{{ post.author.username }}" />
+<meta property="article:published_time" content="{{ post.created_at|date:'c' }}" />
+<meta name="twitter:card" content="summary_large_image" />
+{% endblock %}
+
+{% block content %}
+
+<section class="container py-4">
+  <div class="row">
+    <!-- Publicité (colonne gauche) -->
+    <div class="col-lg-3 order-lg-1 mb-4 mb-lg-0">
+      <div class="sticky-top">
+        {% active_ads "article" as ads %}
+        {% include 'includes/ad_carousel.html' with ads=ads carousel_id='adCarouselArticle' extra_class='ad-card-rect' %}
+      </div>
+    </div>
+
+    <div class="col-lg-9 order-lg-2">
       <article class="article-card">
         <div class="article-cover">
           {% if post.image %}
           <img src="{{ post.image.url }}" />
           {% endif %}
 
-          <span class="category-badge"> {{ post.category.name }} </span>
+          <a
+            href="{% url 'blog.category_detail' post.category.slug %}"
+            class="category-badge"
+          >
+            {{ post.category.name }}
+          </a>
         </div>
 
         <div class="article-body">
@@ -18,7 +47,9 @@
             <div>
               Publié par
 
-              <strong>{{ post.author.username }}</strong>
+              <a href="{% url 'blog.author_detail' post.author.username %}" class="author-link">
+                <strong>{{ post.author.username }}</strong>
+              </a>
 
               • {{ post.created_at|time_since }}
             </div>
@@ -51,13 +82,62 @@
             </span>
           </div>
 
+          {% with article_url=request.scheme|add:"://"|add:request.get_host|add:post.get_absolute_url %}
+          <div class="share-buttons">
+            <span class="share-label">Partager :</span>
+
+            <a
+              href="https://wa.me/?text={{ post.title|urlencode }}%20{{ article_url|urlencode }}"
+              class="share-btn share-whatsapp"
+              target="_blank"
+              rel="noopener"
+              title="Partager sur WhatsApp"
+            >
+              <i class="bi bi-whatsapp"></i>
+            </a>
+
+            <a
+              href="https://www.facebook.com/sharer/sharer.php?u={{ article_url|urlencode }}"
+              class="share-btn share-facebook"
+              target="_blank"
+              rel="noopener"
+              title="Partager sur Facebook"
+            >
+              <i class="bi bi-facebook"></i>
+            </a>
+
+            <button
+              type="button"
+              class="share-btn share-instagram copy-link-btn"
+              data-url="{{ article_url }}"
+              title="Copier le lien pour Instagram"
+            >
+              <i class="bi bi-instagram"></i>
+            </button>
+          </div>
+          {% endwith %}
+
           <hr />
 
-          <div class="article-content">{{ post.content|linebreaks }}</div>
+          <div class="article-content">{{ post.content|safe }}</div>
         </div>
       </article>
 
-      <div class="comments-card mt-5">
+      {% if related_posts %}
+      <div class="related-articles mt-4">
+        <h3 class="related-articles-title">Vous pourriez aussi aimer</h3>
+
+        <div class="row article-grid">
+          {% for related in related_posts %}
+          {% with post=related card_class="col-md-4" %}
+          {% include 'includes/article_card.html' %}
+          {% endwith %}
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="comments-card mt-4">
         <h3>Commentaires ({{ post.comments.count }})</h3>
 
         <hr />
@@ -76,10 +156,10 @@
 
         {% endif %}
       </div>
-      <div class="comments-list mt-5">
-        {% for comment in post.comments.all %} {% if not comment.parent %}
+      <div class="comments-list mt-3">
+        {% for comment in post.comments.all %} {% if not comment.parent and comment.is_approved %}
 
-        <div class="comment-card">
+        <div class="comment-card" id="comment-{{ comment.id }}">
           <div class="comment-header">
             <div class="avatar">{{ comment.user.username|first|upper }}</div>
 
@@ -88,11 +168,14 @@
 
               <br />
 
-              <small> {{ comment.created_at|time_since }} </small>
+              <small>
+                {{ comment.created_at|time_since }}
+                {% if comment.is_edited %}<span class="text-muted">(modifié)</span>{% endif %}
+              </small>
             </div>
           </div>
 
-          <div class="comment-body">{{ comment.content }}</div>
+          <div class="comment-body edit-target">{{ comment.content }}</div>
 
           <div class="comment-actions">
             <button
@@ -117,6 +200,26 @@
               Répondre
             </button>
 
+            {% if user == comment.user %}
+            <button
+              type="button"
+              class="btn btn-sm btn-link edit-btn"
+              data-id="{{ comment.id }}"
+            >
+              <i class="bi bi-pencil"></i>
+              Modifier
+            </button>
+            {% else %}
+            <button
+              type="button"
+              class="btn btn-sm btn-link text-muted report-btn"
+              data-id="{{ comment.id }}"
+            >
+              <i class="bi bi-flag"></i>
+              Signaler
+            </button>
+            {% endif %}
+
             {% else %}
 
             <a
@@ -130,6 +233,16 @@
             {% endif %}
           </div>
 
+          {% if user == comment.user %}
+          <form method="POST" action="{% url 'comment.edit' comment.id %}" class="edit-form d-none mt-3">
+            {% csrf_token %}
+
+            <textarea name="content" class="form-control" rows="3">{{ comment.content }}</textarea>
+
+            <button class="btn btn-primary btn-sm mt-2">Enregistrer</button>
+          </form>
+          {% endif %}
+
           <form method="POST" class="reply-form d-none mt-3">
             {% csrf_token %}
 
@@ -140,9 +253,9 @@
             <button class="btn btn-primary btn-sm mt-2">Répondre</button>
           </form>
 
-          {% for reply in comment.replies.all %}
+          {% for reply in comment.replies.all %} {% if reply.is_approved %}
 
-          <div class="reply-card">
+          <div class="reply-card" id="comment-{{ reply.id }}">
             <div class="comment-header">
               <div class="avatar">{{ reply.user.username|first|upper }}</div>
 
@@ -151,11 +264,14 @@
 
                 <br />
 
-                <small> {{ reply.created_at|time_since }} </small>
+                <small>
+                  {{ reply.created_at|time_since }}
+                  {% if reply.is_edited %}<span class="text-muted">(modifié)</span>{% endif %}
+                </small>
               </div>
             </div>
 
-            <div class="comment-body">{{ reply.content }}</div>
+            <div class="comment-body edit-target">{{ reply.content }}</div>
 
             <div class="comment-actions">
               <button
@@ -166,15 +282,64 @@
 
                 <span>{{ reply.likes.count }}</span>
               </button>
+
+              {% if user.is_authenticated %}
+                {% if user == reply.user %}
+                <button
+                  type="button"
+                  class="btn btn-sm btn-link edit-btn"
+                  data-id="{{ reply.id }}"
+                >
+                  <i class="bi bi-pencil"></i>
+                  Modifier
+                </button>
+                {% else %}
+                <button
+                  type="button"
+                  class="btn btn-sm btn-link text-muted report-btn"
+                  data-id="{{ reply.id }}"
+                >
+                  <i class="bi bi-flag"></i>
+                  Signaler
+                </button>
+                {% endif %}
+              {% endif %}
             </div>
+
+            {% if user == reply.user %}
+            <form method="POST" action="{% url 'comment.edit' reply.id %}" class="edit-form d-none mt-3">
+              {% csrf_token %}
+
+              <textarea name="content" class="form-control" rows="3">{{ reply.content }}</textarea>
+
+              <button class="btn btn-primary btn-sm mt-2">Enregistrer</button>
+            </form>
+            {% endif %}
           </div>
 
-          {% endfor %}
+          {% endif %} {% endfor %}
         </div>
         {% endif %} {% endfor %}
       </div>
     </div>
   </div>
 </section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{{ post.title|escapejs }}",
+  "datePublished": "{{ post.created_at|date:'c' }}",
+  "dateModified": "{{ post.updated_at|date:'c' }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ post.author.username|escapejs }}"
+  }
+  {% if post.image %}
+  ,"image": ["{{ request.scheme }}://{{ request.get_host }}{{ post.image.url }}"]
+  {% endif %}
+}
+</script>
 
 {% endblock %}

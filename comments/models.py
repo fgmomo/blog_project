@@ -29,5 +29,11 @@ class Comment(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    is_approved = models.BooleanField(default=True)
+
+    reports_count = models.PositiveIntegerField(default=0)
+
+    is_edited = models.BooleanField(default=False)
+
     class Meta:
         ordering = ["-created_at"]

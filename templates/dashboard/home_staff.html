@@ -1,0 +1,72 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %} Tableau de bord {% endblock %}
+{% block dashboard_content %}
+
+<div class="page-header reveal">
+  <div class="eyebrow">Administration</div>
+  <h1>Tableau de bord</h1>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-md-4 col-6 reveal">
+    <a href="{% url 'dashboard:post_list' %}" class="dashboard-stat">
+      <div class="dashboard-stat-icon"><i class="bi bi-newspaper"></i></div>
+      <div class="dashboard-stat-value">{{ published_count }}</div>
+      <div class="dashboard-stat-label">Articles publiés</div>
+    </a>
+  </div>
+
+  <div class="col-md-4 col-6 reveal">
+    <a href="{% url 'dashboard:post_list' %}?status=Draft" class="dashboard-stat">
+      <div class="dashboard-stat-icon"><i class="bi bi-file-earmark-text"></i></div>
+      <div class="dashboard-stat-value">{{ draft_count }}</div>
+      <div class="dashboard-stat-label">Brouillons</div>
+    </a>
+  </div>
+
+  <div class="col-md-4 col-6 reveal">
+    <a href="{% url 'dashboard:comment_list' %}?status=pending" class="dashboard-stat dashboard-stat-alert">
+      <div class="dashboard-stat-icon"><i class="bi bi-exclamation-triangle"></i></div>
+      <div class="dashboard-stat-value">{{ pending_comments_count }}</div>
+      <div class="dashboard-stat-label">Commentaires en attente</div>
+    </a>
+  </div>
+
+  <div class="col-md-4 col-6 reveal">
+    <a href="{% url 'dashboard:user_list' %}" class="dashboard-stat">
+      <div class="dashboard-stat-icon"><i class="bi bi-people"></i></div>
+      <div class="dashboard-stat-value">{{ users_count }}</div>
+      <div class="dashboard-stat-label">Utilisateurs</div>
+    </a>
+  </div>
+
+  <div class="col-md-4 col-6 reveal">
+    <a href="{% url 'dashboard:category_list' %}" class="dashboard-stat">
+      <div class="dashboard-stat-icon"><i class="bi bi-tag"></i></div>
+      <div class="dashboard-stat-value">{{ categories_count }}</div>
+      <div class="dashboard-stat-label">Catégories</div>
+    </a>
+  </div>
+
+  <div class="col-md-4 col-6 reveal">
+    <a href="{% url 'dashboard:emission_list' %}" class="dashboard-stat">
+      <div class="dashboard-stat-icon"><i class="bi bi-collection-play"></i></div>
+      <div class="dashboard-stat-value">{{ emissions_count }}</div>
+      <div class="dashboard-stat-label">Émissions</div>
+    </a>
+  </div>
+</div>
+
+<div class="dashboard-quick-actions reveal">
+  <a href="{% url 'dashboard:post_create' %}" class="btn btn-primary">
+    <i class="bi bi-plus-lg"></i> Nouvel article
+  </a>
+  <a href="{% url 'dashboard:emission_create' %}" class="btn btn-outline-primary">
+    <i class="bi bi-plus-lg"></i> Nouvelle émission
+  </a>
+  <a href="{% url 'dashboard:team_create' %}" class="btn btn-outline-primary">
+    <i class="bi bi-plus-lg"></i> Ajouter un membre
+  </a>
+</div>
+
+{% endblock %}

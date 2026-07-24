@@ -1,0 +1,86 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %} Articles {% endblock %}
+{% block dashboard_content %}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 reveal">
+  <div class="page-header mb-0">
+    <div class="eyebrow">Contenu</div>
+    <h1 class="mb-0">Articles</h1>
+  </div>
+
+  <a href="{% url 'dashboard:post_create' %}" class="btn btn-primary">
+    <i class="bi bi-plus-lg"></i> Nouvel article
+  </a>
+</div>
+
+<div class="dashboard-filter-card reveal">
+  <div class="dashboard-filter-card-title"><i class="bi bi-funnel"></i> Filtrer les articles</div>
+
+  <form method="GET" class="dashboard-filters-bar">
+    <div class="dashboard-search">
+      <i class="bi bi-search"></i>
+      <input type="text" name="search" value="{{ request.GET.search|default:'' }}" placeholder="Rechercher un titre...">
+    </div>
+
+    <select name="status" class="form-select" onchange="this.form.submit()">
+      <option value="">Tous les statuts</option>
+      <option value="Published" {% if request.GET.status == "Published" %}selected{% endif %}>Publié</option>
+      <option value="Draft" {% if request.GET.status == "Draft" %}selected{% endif %}>Brouillon</option>
+    </select>
+
+    <button class="btn btn-outline-primary">Filtrer</button>
+  </form>
+</div>
+
+<div class="dashboard-table-wrap reveal">
+  <table class="table dashboard-table">
+    <thead>
+      <tr>
+        <th>Titre</th>
+        <th>Auteur</th>
+        <th>Catégorie</th>
+        <th>Statut</th>
+        <th>Vues</th>
+        <th>Date</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for post in posts %}
+      <tr>
+        <td>{{ post.title|truncatechars:50 }}</td>
+        <td>{{ post.author.username }}</td>
+        <td>{{ post.category.name }}</td>
+        <td>
+          <span class="badge {% if post.status == 'Published' %}bg-success{% else %}bg-secondary{% endif %}">
+            {{ post.get_status_display }}
+          </span>
+        </td>
+        <td>{{ post.views }}</td>
+        <td>{{ post.created_at|date:"d/m/Y" }}</td>
+        <td class="text-end">
+          <a href="{% url 'blog.detail' post.slug %}" class="btn btn-sm btn-outline-secondary" target="_blank">
+            <i class="bi bi-eye"></i>
+          </a>
+          <a href="{% url 'dashboard:post_update' post.pk %}" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-pencil"></i>
+          </a>
+          <a href="{% url 'dashboard:post_delete' post.pk %}" class="btn btn-sm btn-outline-danger">
+            <i class="bi bi-trash"></i>
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7" class="text-center text-muted py-4">Aucun article.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if is_paginated %}
+{% include 'includes/pagination.html' with page_obj=page_obj %}
+{% endif %}
+
+{% endblock %}
